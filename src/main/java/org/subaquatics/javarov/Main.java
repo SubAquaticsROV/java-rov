@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import java.util.Scanner;
+
 public class Main
 {
 
@@ -83,14 +85,42 @@ public class Main
 			int len = -1;
 			try
 			{
-				int c = 0;
-				while( (c=System.in.read()) > -1 )
+				boolean running = true;
+				Scanner input = new Scanner(System.in);
+				IRobot bot = new Robot(this.out);
+				while( running )
 				{
-					this.out.write(0xF0);
-					this.out.write(c);
+					System.out.print("> ");
+					switch(input.next())
+					{
+						case "configureMotorPins":
+						{
+							bot.configureMotorPins(
+								input.nextInt(),
+								input.nextInt(),
+								input.nextInt(),
+								input.nextInt()
+								);
+							break;
+						}
+						case "controlMotor":
+						{
+							bot.controlMotor(
+								input.nextInt(),
+								input.nextInt(),
+								input.nextInt()
+								);
+							break;
+						}
+						default:
+						{
+							System.out.println("Unknown command.");
+						}
+					}
+					input.nextLine();
 				}
 			}
-			catch( IOException e )
+			catch( Exception e )
 			{
 				e.printStackTrace();
 			}
@@ -101,7 +131,7 @@ public class Main
 	{
 		try
 		{
-			(new Main()).connect("COM5");
+			(new Main()).connect("COM3");
 		}
 		catch( Exception e )
 		{
