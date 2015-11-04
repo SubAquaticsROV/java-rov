@@ -3,3 +3,11 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 mainClassName='org.subaquatics.javarov.Main'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile group: 'de.root1', name:'rxtx-rebundled', version:'2.1-7r2-6'
+}
