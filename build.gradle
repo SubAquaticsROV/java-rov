@@ -1,14 +1,4 @@
 
-buildscript {
-	repositories {
-		jcenter()
-	}
-	dependencies {
-		classpath 'de.undercouch:gradle-download-task:2.0.0'
-	}
-}
-
-apply plugin: 'de.undercouch.download'
 apply plugin: 'java'
 apply plugin: 'application'
 
@@ -19,23 +9,5 @@ repositories {
 }
 
 dependencies {
-	//compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
-	compile file('$buildDir/dependency-cache/RXTXComm.jar') {
-		builtBy 'downloadAndUnzipRXTX'
-	}
-	runtime files('$buildDir/dependency-cache/Windows/i386-mingw32/rxtxParallel.dll',
-		'$buildDir/dependency-cache/Windows/i386-mingw32/rxtxSerial.dll') {
-		builtBy 'downloadAndUnzipRXTX'
-	}
+	compile group: 'de.root1', name:'rxtx-rebundled', version:'2.1-7r2-6'
 }
-
-task downloadRXTXZips(type: Download) {
-	src('https://bitbucket.org/jlauer/mfz-cdn/downloads/mfz-rxtx-2.2-20081207-win-x64.zip')
-	dest new File(buildDir, 'zip-downloads/rxtx-win-x64.zip')
-}
-
-task downloadAndUnzipRXTX(dependsOn: downloadRXTXZips, type: Copy) {
-	from zipTree(downloadRXTXZips.dest)
-	into new File(buildDir, 'dependency-cache')
-}
-
