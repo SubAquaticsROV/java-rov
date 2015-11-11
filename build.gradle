@@ -10,4 +10,5 @@ repositories {
 
 dependencies {
 	compile group: 'de.root1', name:'rxtx-rebundled', version:'2.1-7r2-6'
+	compile group: 'net.java.jinput', name:'jinput-platform', version:'2.0.6'
 }
