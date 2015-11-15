@@ -1,4 +1,8 @@
 
+plugins {
+	id 'com.stehno.natives' version '0.2.4'
+}
+
 apply plugin: 'java'
 apply plugin: 'application'
 
@@ -8,7 +12,38 @@ repositories {
 	mavenCentral()
 }
 
+def jInputVersion = '2.0.6'
+
+project.ext.set( 'nativeLibsDir', "$buildDir/libs/natives" )
+
 dependencies {
 	compile group: 'de.root1', name:'rxtx-rebundled', version:'2.1-7r2-6'
 	compile group: 'net.java.jinput', name:'jinput-platform', version:'2.0.6'
+	compile group: 'net.java.jinput', name:'jinput', version:'2.0.6'
+}
+
+natives {
+	jars = [
+		"jinput-platform-2.0.6-natives-windows.jar",
+		"jinput-platform-2.0.6-natives-osx.jar",
+		"jinput-platform-2.0.6-natives-linux.jar"
+	]
+	platforms = 'windows'
+}
+
+task copyNatives(type: Copy) {
+	from file( 'build/natives/' )
+	into file( "$buildDir/natives" )
+}
+
+run {
+	systemProperty 'java.library.path', project.nativeLibsDir
+}
+
+distributions {
+	main {
+		contents {
+			from '$buildDir/natives'
+		}
+	}
 }

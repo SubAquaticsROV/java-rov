@@ -12,6 +12,10 @@ import java.io.OutputStream;
 
 import java.util.Scanner;
 
+import net.java.games.input.Controller;
+import net.java.games.input.ControllerEnvironment;
+import net.java.games.input.Component;
+
 public class Main
 {
 
@@ -112,6 +116,31 @@ public class Main
 								);
 							break;
 						}
+						case "listControllers":
+						{
+							Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+							for(int i=0; i<controllers.length; i++)
+							{
+								System.out.println(i + ": " + controllers[i].getName() + ", " + controllers[i].getType());
+							}
+							break;
+						}
+						case "startController":
+						{
+							int i = input.nextInt();
+							Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+							if(i > controllers.length)
+							{
+								System.out.println("Invalid controller number \""+i+"\".");
+								System.out.println("List available controllers with \"listControllers\".");
+							}
+							else
+							{
+								new Thread(new JoystickWriter(controllers[i])).start();
+								System.out.println("Starting controller listening thread.");
+							}
+							break;
+						}
 						default:
 						{
 							System.out.println("Unknown command.");
@@ -123,6 +152,62 @@ public class Main
 			catch( Exception e )
 			{
 				e.printStackTrace();
+			}
+		}
+	}
+
+	public static class JoystickWriter implements Runnable // Reads from a joystick and writes to the ROV
+	{
+		IRobot robot;
+		Controller controller;
+
+		public JoystickWriter(Controller controller)
+		{
+			this.controller = controller;
+		}
+
+		public void run()
+		{
+			boolean running = true;
+			while(running)
+			{
+				controller.poll();
+				StringBuffer buffer = new StringBuffer();
+				Component[] components = controller.getComponents();
+				for(int i=0; i<components.length; i++)
+				{
+					if(i>0)
+					{
+						buffer.append(", ");
+					}
+					buffer.append(components[i].getName());
+					buffer.append(": ");
+					if(components[i].isAnalog())
+					{
+						buffer.append(components[i].getPollData());
+					}
+					else
+					{
+						if(components[i].getPollData()==1.0f)
+						{
+							buffer.append("On");
+						}
+						else
+						{
+							buffer.append("Off");
+						}
+					}
+				}
+				System.out.println(buffer.toString());
+
+				try
+				{
+					Thread.sleep(20);
+				}
+				catch(InterruptedException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 	}
