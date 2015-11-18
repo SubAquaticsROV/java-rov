@@ -20,6 +20,7 @@ dependencies {
 	compile group: 'de.root1', name:'rxtx-rebundled', version:'2.1-7r2-6'
 	compile group: 'net.java.jinput', name:'jinput-platform', version:'2.0.6'
 	compile group: 'net.java.jinput', name:'jinput', version:'2.0.6'
+	runtime files("$buildDir/natives/windows/")
 }
 
 natives {
@@ -31,19 +32,16 @@ natives {
 	platforms = 'windows'
 }
 
-task copyNatives(type: Copy) {
-	from file( 'build/natives/' )
-	into file( "$buildDir/natives" )
-}
-
 run {
-	systemProperty 'java.library.path', project.nativeLibsDir
+	systemProperty 'java.library.path', 'build/natives/windows'
 }
 
-distributions {
-	main {
-		contents {
-			from '$buildDir/natives'
-		}
+startScripts {
+	def jvmOpts = "-Djava.library.path=lib"
+	inputs.property("jvmOpts", {jvmOpts})
+	doLast {
+		def optsEnvVar = "DEFAULT_JVM_OPTS"
+		unixScript.text = unixScript.text.replace("$optsEnvVar=${'""'}", "$optsEnvVar=${'"'}$jvmOpts${'"'}")
+		windowsScript.text = windowsScript.text.replace("set $optsEnvVar=", "set $optsEnvVar=$jvmOpts")
 	}
 }
