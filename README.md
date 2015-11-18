@@ -21,10 +21,8 @@ the program, so it may be interfering with the program. To ensure best results,
 use the following commands to run the program.
 
 ```
-cd java-rov              # Navigate into our local repository
-.\gradlew.bat distZip    # Bundle our project as a zip
-cd build\distributions   # navigate to zip file
-unzip java-rov.zip
-cd java-rov             
-.\bin\java-rov.bat       # run the program
+cd java-rov                # Navigate into our local repository
+.\gradlew.bat installDist  # Make easy to run distribution
+cd build\install\java-rov  # Navigate to distribution folder
+.\bin\java-rov.bat         # run the program
 ```
