@@ -13,6 +13,8 @@ import java.io.OutputStream;
 import java.util.Scanner;
 
 import net.java.games.input.Controller;
+import net.java.games.input.Event;
+import net.java.games.input.EventQueue;
 import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Component;
 
@@ -169,36 +171,22 @@ public class Main
 		public void run()
 		{
 			boolean running = true;
+			EventQueue queue = controller.getEventQueue();
+			Event event = new Event();
 			while(running)
 			{
 				controller.poll();
-				StringBuffer buffer = new StringBuffer();
-				Component[] components = controller.getComponents();
-				for(int i=0; i<components.length; i++)
+				while(queue.getNextEvent(event))
 				{
-					if(i>0)
-					{
-						buffer.append(", ");
-					}
-					buffer.append(components[i].getName());
-					buffer.append(": ");
-					if(components[i].isAnalog())
-					{
-						buffer.append(components[i].getPollData());
-					}
-					else
-					{
-						if(components[i].getPollData()==1.0f)
-						{
-							buffer.append("On");
-						}
-						else
-						{
-							buffer.append("Off");
-						}
-					}
+					StringBuffer buffer = new StringBuffer();
+					buffer.append(controller.getName());
+					buffer.append("\t");
+					Component component = event.getComponent();
+					buffer.append(component.getIdentifier().getName());
+					buffer.append("\t");
+					buffer.append(event.getValue());
+					System.out.println(buffer.toString());
 				}
-				System.out.println(buffer.toString());
 
 				try
 				{
