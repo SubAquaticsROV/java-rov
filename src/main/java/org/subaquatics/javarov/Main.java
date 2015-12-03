@@ -21,6 +21,8 @@ import net.java.games.input.Component;
 public class Main
 {
 
+	public static boolean running;
+
 	public void connect(String portName) throws Exception
 	{
 		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
@@ -38,6 +40,8 @@ public class Main
 
 				InputStream in = serialPort.getInputStream();
 				OutputStream out = serialPort.getOutputStream();
+
+				running = true;
 
 				(new Thread(new SerialReader(in))).start();
 				(new Thread(new SerialWriter(out))).start();
@@ -64,7 +68,7 @@ public class Main
 			int len = -1;
 			try
 			{
-				while( (len=this.in.read(buffer)) > -1 )
+				while( (len=this.in.read(buffer)) > -1 && running)
 				{
 					System.out.print(new String(buffer,0,len));
 				}
@@ -91,12 +95,10 @@ public class Main
 			int len = -1;
 			try
 			{
-				boolean running = true;
 				Scanner input = new Scanner(System.in);
 				IRobot bot = new Robot(this.out);
 				while( running )
 				{
-					System.out.print("> ");
 					switch(input.next())
 					{
 						case "echo":
@@ -152,6 +154,11 @@ public class Main
 							}
 							break;
 						}
+						case "exit":
+						{
+							running = false;
+							break;
+						}
 						default:
 						{
 							System.out.println("Unknown command.");
@@ -179,7 +186,6 @@ public class Main
 
 		public void run()
 		{
-			boolean running = true;
 			EventQueue queue = controller.getEventQueue();
 			Event event = new Event();
 			while(running)
@@ -213,7 +219,16 @@ public class Main
 	{
 		try
 		{
-			(new Main()).connect("COM3");
+			java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+			while (portEnum.hasMoreElements() )
+			{
+				CommPortIdentifier portIdentifier = portEnum.nextElement();
+				System.out.println(portIdentifier.getName());
+			}
+			System.out.print("Tpye in COM port you would like: ");
+			Scanner input = new Scanner(System.in);
+			String portIdentifier = input.next();
+			(new Main()).connect(portIdentifier);
 		}
 		catch( Exception e )
 		{
