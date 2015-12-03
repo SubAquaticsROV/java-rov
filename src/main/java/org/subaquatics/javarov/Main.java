@@ -99,6 +99,15 @@ public class Main
 					System.out.print("> ");
 					switch(input.next())
 					{
+						case "echo":
+						{
+							String echoString = input.next();
+							for(int i=0; i < echoString.length(); i++)
+							{
+								bot.echo((int)echoString.charAt(i));
+							}
+							break;
+						}
 						case "configureMotorPins":
 						{
 							bot.configureMotorPins(

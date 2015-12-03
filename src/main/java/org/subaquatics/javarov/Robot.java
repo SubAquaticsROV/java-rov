@@ -45,4 +45,18 @@ public class Robot implements IRobot
 		}
 	}
 
+	@Override
+	public void echo(int byteInt)
+	{
+		try
+		{
+			out.write(0xF0);
+			out.write(byteInt & 0xFF);
+		}
+		catch(IOException e)
+		{
+			System.out.println("Error writing to robot.");
+		}
+	}
+
 }
