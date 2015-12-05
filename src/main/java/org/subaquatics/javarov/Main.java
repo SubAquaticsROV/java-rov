@@ -212,6 +212,45 @@ public class Main
 					e.printStackTrace();
 				}
 			}
+
+			public void move_xy(double x, double y)
+			{
+				double length = Math.sqrt(x*x+y*y);
+		        double direction = Math.atan2(y, x)+(PI/4); // leave it in radians
+		        direction = direction * 180 / Math.PI;
+		        int way = Math.floor(direction/90);
+		        if (way > 4)
+		        {
+		            way -= 4;
+		        }
+		        if (way < 0)
+		        {
+		            way += 4;
+		        }
+		        int P_X = 1;
+		        int P_X = 1;
+		        int P_X = 1;
+		        int P_X = 1;
+		        switch(way)
+		        {
+		            case 3: // Going forward
+		            case 1: // Going back
+		            {
+		                robot.controlMotor(context, P_X, way==3, way==1, (int) abs(y/JOYSTICK_REDUCTION_VALUE));
+		                robot.controlMotor(context, N_X, way==3, way==1, (int) abs(y/JOYSTICK_REDUCTION_VALUE));
+		                robot.controlMotor(context, P_Y, way==3, way==1, (int) abs(y/JOYSTICK_REDUCTION_VALUE));
+		                robot.controlMotor(context, N_Y, way==3, way==1, (int) abs(y/JOYSTICK_REDUCTION_VALUE));
+		            } break;
+		            case 0: // Going right
+		            case 2: // Going left
+		            {
+		                robot.controlMotor(context, P_X, way==0, way==2, (int) abs(x/JOYSTICK_REDUCTION_VALUE)); // 2
+		                robot.controlMotor(context, N_X, way==0, way==2, (int) abs(x/JOYSTICK_REDUCTION_VALUE)); // 2
+		                robot.controlMotor(context, P_Y, way==2, way==0, (int) abs(x/JOYSTICK_REDUCTION_VALUE)); // 0
+		                robot.controlMotor(context, N_Y, way==2, way==0, (int) abs(x/JOYSTICK_REDUCTION_VALUE)); // 4
+		            } break;
+        }
+			}
 		}
 	}
 
