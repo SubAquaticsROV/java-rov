@@ -188,19 +188,25 @@ public class Main
 		{
 			EventQueue queue = controller.getEventQueue();
 			Event event = new Event();
+			float x = 0;
+			float y = 0;
 			while(running)
 			{
 				controller.poll();
 				while(queue.getNextEvent(event))
 				{
-					StringBuffer buffer = new StringBuffer();
-					buffer.append(controller.getName());
-					buffer.append("\t");
-					Component component = event.getComponent();
-					buffer.append(component.getIdentifier().getName());
-					buffer.append("\t");
-					buffer.append(event.getValue());
-					System.out.println(buffer.toString());
+					switch(component.getIdentifier().getName())
+					{
+						case "x":
+							x = event.getValue();
+							move_xy(x, y);
+							break;
+						case "y":
+							y = event.getValue();
+							move_xy(x, y);
+							break;
+
+					}
 				}
 
 				try
