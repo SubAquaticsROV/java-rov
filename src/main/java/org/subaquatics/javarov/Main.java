@@ -25,43 +25,58 @@ public class Main
 
 	public void connect(String portName) throws Exception
 	{
+	    //Calling RXTX library to get the port the arduino is on - assumed to be
+	    //"COM3" in this instance
 		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-		if(portIdentifier.isCurrentlyOwned())
+		if(portIdentifier.isCurrentlyOwned()) //Makes sure com port is not being used by anything (such as the Arduino IDE)
 		{
 			System.out.println("Error: Port is currently in use");
 		}
 		else
 		{
+		    //Connects to the port "COM3"
 			CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
-			if (commPort instanceof SerialPort)
+			if (commPort instanceof SerialPort) //Makes sure it is a serial port
 			{
+			    //Casting commPort from type CommPort to serialPort of type SerialPort
 				SerialPort serialPort = (SerialPort) commPort;
+				//Configure the port so it can communicate with the arduino (note the baud rate, 9600 in this case)
 				serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-
+                
+                //Create an input stream (similar to System.in) that connects to serialPort
 				InputStream in = serialPort.getInputStream();
+				//Create an output stream (similar to System.out) that connects to serialPort
 				OutputStream out = serialPort.getOutputStream();
 
 				running = true;
 
+                
+                //Create new threads
+                //This allows full-duplex (two-way) communication
+                //The in and out streams are passed in
 				(new Thread(new SerialReader(in))).start();
 				(new Thread(new SerialWriter(out))).start();
 			}
-			else
+			else //If it is not a serial port, say so
 			{
 				System.out.println("Error: Only serial ports are handled by this example.");
 			}
 		}
 	}
 
+    //Inner class declaration
+    //Uses the runnable interface to allow for multi-threading
+    //Multi-threading = running multiple things simultaneously
 	public static class SerialReader implements Runnable
 	{
 		InputStream in;
-
+        
+        //Constructor
 		public SerialReader(InputStream in)
 		{
 			this.in = in;
 		}
-
+        
 		public void run()
 		{
 			byte[] buffer = new byte[1024];
@@ -79,11 +94,15 @@ public class Main
 			}
 		}
 	}
-
+    
+    //Inner class declaration
+    //Uses the runnable interface to allow for multi-threading
+    //Multi-threading = running multiple things simultaneously
 	public static class SerialWriter implements Runnable
 	{
 		OutputStream out;
-
+    
+        //Constructor
 		public SerialWriter(OutputStream out)
 		{
 			this.out = out;
