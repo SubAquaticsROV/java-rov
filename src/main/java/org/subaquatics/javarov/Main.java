@@ -214,7 +214,7 @@ public class Main
 				controller.poll();
 				while(queue.getNextEvent(event))
 				{
-					switch(component.getIdentifier().getName())
+					switch(event.getComponent().getIdentifier().getName())
 					{
 						case "x":
 							x = event.getValue();
