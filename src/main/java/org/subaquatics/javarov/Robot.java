@@ -15,6 +15,21 @@ public class Robot implements IRobot
 	}
 	
 	@Override
+	public void configureMotorPWMBounds(int min, int max)
+	{
+		try
+		{
+			out.write(0x12); // The PWM bounds command id
+			out.write(min);
+			out.write(max);
+		}
+		catch(IOException e)
+		{
+			System.out.println("Error writing to robot");
+		}
+	}
+
+	@Override
 	public void configureMotorPins(int motorId, int pwmPin, int aPin, int bPin)
 	{
 		try

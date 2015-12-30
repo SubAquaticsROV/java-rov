@@ -129,6 +129,14 @@ public class Main
 							}
 							break;
 						}
+						case "configureMotorPWMBounds":
+						{
+							bot.configureMotorPWMBounds(
+								input.nextInt(),
+								input.nextInt()
+								);
+							break;
+						}
 						case "configureMotorPins":
 						{
 							bot.configureMotorPins(
@@ -168,7 +176,7 @@ public class Main
 							}
 							else
 							{
-								new Thread(new JoystickWriter(controllers[i])).start();
+								new Thread(new JoystickWriter(bot, controllers[i])).start();
 								System.out.println("Starting controller listening thread.");
 							}
 							break;
@@ -198,8 +206,9 @@ public class Main
 		IRobot robot;
 		Controller controller;
 
-		public JoystickWriter(Controller controller)
+		public JoystickWriter(IRobot robot, Controller controller)
 		{
+			this.robot = robot;
 			this.controller = controller;
 		}
 
@@ -209,6 +218,7 @@ public class Main
 			Event event = new Event();
 			float x = 0;
 			float y = 0;
+			final float deadzone = 0.1f;
 			while(running)
 			{
 				controller.poll();
@@ -218,13 +228,18 @@ public class Main
 					{
 						case "x":
 							x = event.getValue();
-							move_xy(x, y);
+							if(Math.abs(x) > deadzone)
+								move_xy(x, y);
+							else
+								move_xy(0, y);
 							break;
 						case "y":
 							y = event.getValue();
-							move_xy(x, y);
+							if(Math.abs(y) > deadzone)
+								move_xy(x, y);
+							else
+								move_xy(x, 0);
 							break;
-
 					}
 				}
 
@@ -256,9 +271,9 @@ public class Main
 	            way += 4;
 	        }
 	        int P_X = 1;
-	        int N_X = 1;
-	        int P_Y = 1;
-	        int N_Y = 1;
+	        int N_X = 3;
+	        int P_Y = 2;
+	        int N_Y = 4;
 	        switch(way)
 	        {
 	            case 3: // Going forward
