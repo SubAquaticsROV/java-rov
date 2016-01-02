@@ -246,6 +246,8 @@ public class Main
 						case "rx":
 							rotate_z(event.getValue());
 							break;
+						case "ry":
+							break;
 						default:
 							System.out.println(event.getComponent().getIdentifier().getName());
 					}
@@ -268,19 +270,14 @@ public class Main
 		{
 			x *= 255;
 			y *= 255;
-	        int top = 1;
-        	int bottom = 4;
-        	int left = 3;
-        	int right = 2;
 
         	if (y > 0) {
-	            robot.controlMotor(1, 2, (int) y);
-	            robot.controlMotor(2, 1, (int) y);
-	            robot.controlMotor(3, 0, 0);
-	            robot.controlMotor(4, 0, 0);
+	            robot.controlMotor(3, 2, (int) y);
+	            robot.controlMotor(4, 1, (int) y);
         	} else if (y < 0) {
-	            robot.controlMotor(1, 2, (int) y);
-	            robot.controlMotor(2, 1, (int) y);
+	            robot.controlMotor(3, 1, (int) -y);
+	            robot.controlMotor(4, 2, (int) -y);
+        	} else {
 	            robot.controlMotor(3, 0, 0);
 	            robot.controlMotor(4, 0, 0);
         	}
@@ -288,25 +285,17 @@ public class Main
 
         public void rotate_z(double z) {
         	int value = (int) (z *255);
-        	int top = 1;
-        	int bottom = 4;
-        	int left = 3;
-        	int right = 2;
+        	int one = 1;
+        	int two = 2;
         	if (value > 0) {
-        		robot.controlMotor(top, 1, value);
-        		robot.controlMotor(bottom, 1, value);
-        		robot.controlMotor(left, 1, value);
-        		robot.controlMotor(right, 1, value);
+        		robot.controlMotor(one, 1, value);
+        		robot.controlMotor(two, 1, value);
         	} else if (value < 0) {
-        		robot.controlMotor(top, 2, -value);
-        		robot.controlMotor(bottom, 2, -value);
-        		robot.controlMotor(left, 2, -value);
-        		robot.controlMotor(right, 2, -value);
+        		robot.controlMotor(one, 2, -value);
+        		robot.controlMotor(two, 2, -value);
         	} else {
-        		robot.controlMotor(top, 0, 0);
-        		robot.controlMotor(bottom, 0, 0);
-        		robot.controlMotor(left, 0, 0);
-        		robot.controlMotor(right, 0, 0);
+        		robot.controlMotor(one, 0, 0);
+        		robot.controlMotor(two, 0, 0);
         	}
         }
 
