@@ -240,10 +240,10 @@ public class Main
 							else
 								move_xy(x, 0);
 							break;
-						case "slider":
+						case "z":
 							move_z(event.getValue());
 							break;
-						case "rz":
+						case "rx":
 							rotate_z(event.getValue());
 							break;
 						default:
@@ -274,6 +274,11 @@ public class Main
         	int right = 2;
 
         	if (y > 0) {
+	            robot.controlMotor(1, 2, (int) y);
+	            robot.controlMotor(2, 1, (int) y);
+	            robot.controlMotor(3, 0, 0);
+	            robot.controlMotor(4, 0, 0);
+        	} else if (y < 0) {
 	            robot.controlMotor(1, 2, (int) y);
 	            robot.controlMotor(2, 1, (int) y);
 	            robot.controlMotor(3, 0, 0);
