@@ -216,8 +216,7 @@ public class Main
 		{
 			EventQueue queue = controller.getEventQueue();
 			Event event = new Event();
-			float x = 0;
-			float y = 0;
+			boolean bumper = false;
 			final float deadzone = 0.25f;
 			while(running)
 			{
@@ -227,29 +226,30 @@ public class Main
 					switch(event.getComponent().getIdentifier().getName())
 					{
 						case "x":
-							x = event.getValue();
-							if(Math.abs(x) > deadzone)
-								move_xy(x, y);
-							else
-								move_xy(0, y);
 							break;
 						case "y":
-							y = event.getValue();
-							if(Math.abs(y) > deadzone)
-								move_xy(x, y);
-							else
-								move_xy(x, 0);
+							if(!bumper)
+								move_y(event.getValue());
 							break;
 						case "z":
 							move_z(event.getValue());
 							break;
 						case "rx":
-							rotate_z(event.getValue());
+							if(!bumper)
+								rotate_z(event.getValue());
 							break;
 						case "ry":
 							break;
+						case "4": // Left bumper
+							strafe(-event.getValue());
+							bumper = event.getValue()>0;
+							break;
+						case "5": // Right bumper
+							strafe(event.getValue());
+							bumper = event.getValue()>0;
+							break;
 						default:
-							System.out.println(event.getComponent().getIdentifier().getName());
+							System.out.println(event.getComponent().getIdentifier().getName() + ": " + event.getValue());
 					}
 				}
 
@@ -266,9 +266,8 @@ public class Main
 			}
 		}
 
-		public void move_xy(double x, double y)
+		public void move_y(double y)
 		{
-			x *= 255;
 			y *= 255;
 
         	if (y > 0) {
@@ -320,6 +319,26 @@ public class Main
         		robot.controlMotor(m2, 0, 0);
         		robot.controlMotor(m3, 0, 0);
         		robot.controlMotor(m4, 0, 0);
+        	}
+        }
+
+        public void strafe(double x) {
+        	int value = (int) (x * 255);
+        	if (value > 0) {
+        		robot.controlMotor(1, 1, value);
+        		robot.controlMotor(2, 1, value);
+        		robot.controlMotor(3, 1, value);
+        		robot.controlMotor(4, 1, value);
+        	} else if (value < 0) {
+        		robot.controlMotor(1, 2, -value);
+        		robot.controlMotor(2, 2, -value);
+        		robot.controlMotor(3, 2, -value);
+        		robot.controlMotor(4, 2, -value);
+        	} else {
+        		robot.controlMotor(1, 0, 0);
+        		robot.controlMotor(2, 0, 0);
+        		robot.controlMotor(3, 0, 0);
+        		robot.controlMotor(4, 0, 0);
         	}
         }
 	}
