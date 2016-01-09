@@ -115,7 +115,7 @@ public class Main
 			try
 			{
 				Scanner input = new Scanner(System.in);
-				IRobot bot = new Robot(this.out);
+				IRobot bot = new BufferedRobot(this.out);
 				while( running )
 				{
 					switch(input.next())
@@ -216,9 +216,8 @@ public class Main
 		{
 			EventQueue queue = controller.getEventQueue();
 			Event event = new Event();
-			float x = 0;
-			float y = 0;
-			final float deadzone = 0.1f;
+			boolean bumper = false;
+			final float deadzone = 0.25f;
 			while(running)
 			{
 				controller.poll();
@@ -227,21 +226,34 @@ public class Main
 					switch(event.getComponent().getIdentifier().getName())
 					{
 						case "x":
-							x = event.getValue();
-							if(Math.abs(x) > deadzone)
-								move_xy(x, y);
-							else
-								move_xy(0, y);
 							break;
 						case "y":
-							y = event.getValue();
-							if(Math.abs(y) > deadzone)
-								move_xy(x, y);
-							else
-								move_xy(x, 0);
+							if(!bumper)
+								move_y(event.getValue());
 							break;
+						case "z":
+							move_z(event.getValue());
+							break;
+						case "rx":
+							if(!bumper)
+								rotate_z(event.getValue());
+							break;
+						case "ry":
+							break;
+						case "4": // Left bumper
+							strafe(-event.getValue());
+							bumper = event.getValue()>0;
+							break;
+						case "5": // Right bumper
+							strafe(event.getValue());
+							bumper = event.getValue()>0;
+							break;
+						default:
+							System.out.println(event.getComponent().getIdentifier().getName() + ": " + event.getValue());
 					}
 				}
+
+				((BufferedRobot)robot).update();
 
 				try
 				{
@@ -254,46 +266,80 @@ public class Main
 			}
 		}
 
-		public void move_xy(double x, double y)
+		public void move_y(double y)
 		{
-			x *= 256;
-			y *= 256;
-			double length = Math.sqrt(x*x+y*y);
-	        double direction = Math.atan2(y, x)+(Math.PI/4); // leave it in radians
-	        direction = direction * 180 / Math.PI;
-	        int way = (int) Math.floor(direction/90);
-	        if (way > 4)
-	        {
-	            way -= 4;
-	        }
-	        if (way < 0)
-	        {
-	            way += 4;
-	        }
-	        int P_X = 1;
-	        int N_X = 3;
-	        int P_Y = 2;
-	        int N_Y = 4;
-	        switch(way)
-	        {
-	            case 3: // Going forward
-	            case 1: // Going back
-	            {
-	            	int flags = way==3 ? 1 : 2;
-	                robot.controlMotor(P_X, flags, (int) Math.abs(y));
-	                robot.controlMotor(N_X, flags, (int) Math.abs(y));
-	                robot.controlMotor(P_Y, flags, (int) Math.abs(y));
-	                robot.controlMotor(N_Y, flags, (int) Math.abs(y));
-	            } break;
-	            case 0: // Going right
-	            case 2: // Going left
-	            {
-	                robot.controlMotor(P_X, way==0 ? 1 : 2, (int) Math.abs(x)); // 2
-	                robot.controlMotor(N_X, way==0 ? 1 : 2, (int) Math.abs(x)); // 2
-	                robot.controlMotor(P_Y, way==2 ? 1 : 2, (int) Math.abs(x)); // 0
-	                robot.controlMotor(N_Y, way==2 ? 1 : 2, (int) Math.abs(x)); // 4
-	            } break;
-	        }
+			y *= 255;
+
+        	if (y > 0) {
+	            robot.controlMotor(3, 2, (int) y);
+	            robot.controlMotor(4, 1, (int) y);
+        	} else if (y < 0) {
+	            robot.controlMotor(3, 1, (int) -y);
+	            robot.controlMotor(4, 2, (int) -y);
+        	} else {
+	            robot.controlMotor(3, 0, 0);
+	            robot.controlMotor(4, 0, 0);
+        	}
+        }
+
+        public void rotate_z(double z) {
+        	int value = (int) (z *255);
+        	int one = 1;
+        	int two = 2;
+        	if (value > 0) {
+        		robot.controlMotor(one, 1, value);
+        		robot.controlMotor(two, 1, value);
+        	} else if (value < 0) {
+        		robot.controlMotor(one, 2, -value);
+        		robot.controlMotor(two, 2, -value);
+        	} else {
+        		robot.controlMotor(one, 0, 0);
+        		robot.controlMotor(two, 0, 0);
+        	}
+        }
+
+        public void move_z(double z) {
+        	int value = (int) (z *255);
+        	int m1 = 5;
+        	int m2 = 6;
+        	int m3 = 7;
+        	int m4 = 8;
+        	if (value > 0) {
+        		robot.controlMotor(m1, 1, value);
+        		robot.controlMotor(m2, 1, value);
+        		robot.controlMotor(m3, 1, value);
+        		robot.controlMotor(m4, 1, value);
+        	} else if (value < 0) {
+        		robot.controlMotor(m1, 2, -value);
+        		robot.controlMotor(m2, 2, -value);
+        		robot.controlMotor(m3, 2, -value);
+        		robot.controlMotor(m4, 2, -value);
+        	} else {
+        		robot.controlMotor(m1, 0, 0);
+        		robot.controlMotor(m2, 0, 0);
+        		robot.controlMotor(m3, 0, 0);
+        		robot.controlMotor(m4, 0, 0);
+        	}
+        }
+
+        public void strafe(double x) {
+        	int value = (int) (x * 255);
+        	if (value > 0) {
+        		robot.controlMotor(1, 1, value);
+        		robot.controlMotor(2, 1, value);
+        		robot.controlMotor(3, 1, value);
+        		robot.controlMotor(4, 1, value);
+        	} else if (value < 0) {
+        		robot.controlMotor(1, 2, -value);
+        		robot.controlMotor(2, 2, -value);
+        		robot.controlMotor(3, 2, -value);
+        		robot.controlMotor(4, 2, -value);
+        	} else {
+        		robot.controlMotor(1, 0, 0);
+        		robot.controlMotor(2, 0, 0);
+        		robot.controlMotor(3, 0, 0);
+        		robot.controlMotor(4, 0, 0);
+        	}
         }
 	}
 
