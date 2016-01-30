@@ -1,12 +1,18 @@
 package org.subaquatics.javarov;
 
 import java.awt.EventQueue;
-import javax.swing.JFrame;
+import javax.swing.*;
+
 
 public class GUI extends JFrame implements Runnable {
-
+	private JTextField command;
+	private JtextArea outputarea;
+	
 	public GUI() {
-
+		command = new JTextField();
+		outputarea = new JTextArea();
+		add(command);
+		add(outputarea);
 		
 	}
 
