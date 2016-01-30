@@ -5,7 +5,7 @@ import com.flipkart.lois.channel.exceptions.ChannelClosedException;
 import java.io.InputStream;
 import java.io.IOException;
 
-public class ROVListener {
+public class ROVListener implements Runnable {
 
 	InputStream input; // Where we listen to stuff from the ROV
 	SendChannel<String> messageOutput; // The place where we log the ROV's messages to
