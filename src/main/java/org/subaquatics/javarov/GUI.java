@@ -17,7 +17,7 @@ public class GUI extends JFrame implements Runnable {
 		command = new JTextField(20);
 		commandbutton = new JButton("Do Command");
 
-		panel.add(outputarea, "w 100%, wrap");
+		panel.add(new JScrollPane(outputarea), "w 100%, span 2, wrap");
 		panel.add(command, "w 80%");
 		panel.add(commandbutton);
 		
