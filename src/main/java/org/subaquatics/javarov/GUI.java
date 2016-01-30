@@ -3,9 +3,14 @@ package org.subaquatics.javarov;
 import java.awt.EventQueue;
 import javax.swing.*;
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import net.miginfocom.swing.MigLayout;
 import org.subaquatics.javarov.commands.Command;
 import com.flipkart.lois.channel.impl.BufferedChannel;
+import java.util.Enumeration;
+import gnu.io.CommPort;
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
 
 public class GUI extends JFrame implements Runnable {
 
@@ -13,10 +18,12 @@ public class GUI extends JFrame implements Runnable {
 	private JLabel robotLabel;
 	private JComboBox robotComboBox;
 	private JButton robotButton;
+	private JButton robotRefreshButton;
 
 	private JLabel controllerLabel;
 	private JComboBox controllerComboBox;
 	private JButton controllerButton;
+	private JButton controllerRefreshButton;
 
 	private JTextField command;
 	private JTextArea outputarea;
@@ -32,10 +39,15 @@ public class GUI extends JFrame implements Runnable {
 
 		// COM ports
 		robotLabel = new JLabel("Robot: ");
-		robotComboBox = new JComboBox(new String[]{"Option one", "Option two"});
+		robotComboBox = new JComboBox(new String[]{""});
 		robotButton = new JButton("Connect");
 		robotButton.addActionListener((e) -> {
 			robotComboBox.setEnabled(!robotComboBox.isEnabled());
+		});
+		robotRefreshButton = new JButton("Refresh");
+		robotRefreshButton.addActionListener((e) -> {
+			String[] ports = getSerialPorts();
+			robotComboBox.setModel(new DefaultComboBoxModel(ports));
 		});
 
 		// Controller ports
@@ -63,9 +75,10 @@ public class GUI extends JFrame implements Runnable {
 		});
 
 		// Add stuff to the layout
-		panel.add(robotLabel, "split 3");
+		panel.add(robotLabel, "split 4");
 		panel.add(robotComboBox);
 		panel.add(robotButton);
+		panel.add(robotRefreshButton);
 
 		panel.add(controllerLabel, "split 3");
 		panel.add(controllerComboBox);
@@ -89,5 +102,19 @@ public class GUI extends JFrame implements Runnable {
 		initUI();
 
 		this.setVisible(true);
+	}
+
+	private String[] getSerialPorts() {
+		Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+		ArrayList<String> ports = new ArrayList<String>();
+		while(portEnum.hasMoreElements()) {
+			CommPortIdentifier portIdentifier = portEnum.nextElement();
+			ports.add(portIdentifier.getName());
+		}
+		String[] portArray = new String[ports.size()];
+		for (int i=0; i<ports.size(); i++) {
+			portArray[i] = ports.get(i);
+		}
+		return portArray;
 	}
 }
