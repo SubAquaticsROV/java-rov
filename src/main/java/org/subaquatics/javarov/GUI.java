@@ -14,7 +14,10 @@ public class GUI extends JFrame implements Runnable {
 		JPanel panel = new JPanel(new MigLayout());
 
 		outputarea = new JTextArea(20, 1);
+		outputarea.setEditable(false);
+
 		command = new JTextField(20);
+
 		commandbutton = new JButton("Do Command");
 		commandbutton.addActionListener((e) -> {
 			String text = command.getText();
