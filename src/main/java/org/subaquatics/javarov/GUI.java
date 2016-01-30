@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class GUI extends JFrame implements Runnable {
 	private JTextField command;
-	private JtextArea outputarea;
+	private JTextArea outputarea;
 	
 	public GUI() {
 		command = new JTextField();
