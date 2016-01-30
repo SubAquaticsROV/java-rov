@@ -16,6 +16,11 @@ public class GUI extends JFrame implements Runnable {
 		outputarea = new JTextArea(25,30);
 		command = new JTextField(20);
 		commandbutton = new JButton("Do Command");
+		commandbutton.addActionListener((e) -> {
+			String text = command.getText();
+			outputarea.append(text);
+			command.setText("");
+		});
 
 		panel.add(new JScrollPane(outputarea), "w 100%, span 2, wrap");
 		panel.add(command, "w 80%");
