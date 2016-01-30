@@ -13,7 +13,7 @@ public class GUI extends JFrame implements Runnable {
 	public GUI() {
 		JPanel panel = new JPanel(new MigLayout());
 
-		outputarea = new JTextArea(25,30);
+		outputarea = new JTextArea(20, 1);
 		command = new JTextField(20);
 		commandbutton = new JButton("Do Command");
 
