@@ -18,7 +18,7 @@ public class GUI extends JFrame implements Runnable {
 		commandbutton = new JButton("Do Command");
 		commandbutton.addActionListener((e) -> {
 			String text = command.getText();
-			outputarea.append(text);
+			outputarea.append(text + "\n");
 			command.setText("");
 		});
 
