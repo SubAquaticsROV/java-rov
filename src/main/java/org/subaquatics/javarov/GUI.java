@@ -4,8 +4,12 @@ import java.awt.EventQueue;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
+import org.subaquatics.javarov.commands.Command;
+import com.flipkart.lois.channel.impl.BufferedChannel;
 
 public class GUI extends JFrame implements Runnable {
+
+	// Graphical stuff
 	private JLabel robotLabel;
 	private JComboBox robotComboBox;
 	private JButton robotButton;
@@ -17,6 +21,11 @@ public class GUI extends JFrame implements Runnable {
 	private JTextField command;
 	private JTextArea outputarea;
 	private JButton commandbutton;
+
+	// Business logic stuff
+	private BufferedChannel<Command> commandChannel;
+	private BufferedChannel<Boolean> controllerRunningChannel;
+	private TextCommandParser parser;
 	
 	public GUI() {
 		JPanel panel = new JPanel(new MigLayout("wrap 2"));
@@ -45,8 +54,12 @@ public class GUI extends JFrame implements Runnable {
 		commandbutton = new JButton("Do Command");
 		commandbutton.addActionListener((e) -> {
 			String text = command.getText();
-			outputarea.append(text + "\n");
 			command.setText("");
+			if (parser == null) {
+				outputarea.append("!!! No ROV is connected !!!\n");
+			} else {
+				parser.parse(text);
+			}
 		});
 
 		// Add stuff to the layout
