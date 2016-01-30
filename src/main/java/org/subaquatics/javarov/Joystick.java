@@ -14,7 +14,7 @@ public class Joystick {
 
 	Controller controller; // Where we listen to stuff from the ROV
 	SendChannel<Command> robot; // A channel to send commands to the robot
-    ReceiveChannel<Boolean> runningChannel;
+    ReceiveChannel<Boolean> runningChannel; // A channel that indicates if the thread should die
 
 	public Joystick(Controller controller, SendChannel<Command> robot, ReceiveChannel<Boolean> runningChannel) {
 		this.controller = controller;
