@@ -12,8 +12,8 @@ public class ROVCommander implements Runnable {
 	ReceiveChannel<Command> commandChannel; 
 	ReceiveChannel<Boolean> runningChannel; // Tells the thread when to close
 
-	public ROVCommander(OutputStream output, ReceiveChannel<Command> commandChannel, ReceiveChannel<Booleab> runningChannel) {
-		this.input = input;
+	public ROVCommander(OutputStream serialPort, ReceiveChannel<Command> commandChannel, ReceiveChannel<Boolean> runningChannel) {
+		this.serialPort = serialPort;
 		this.commandChannel = commandChannel;
 	}
 
@@ -23,11 +23,11 @@ public class ROVCommander implements Runnable {
 			while (running) {
 				Command command = commandChannel.tryReceive();
 				if (command != null) {
-					out.write(command.getId().getByte());
+					serialPort.write(command.getId().getByte());
 					byte[] payload = command.getData();
 					int length = command.getId().getSize();
 					for (int i=0; i<length; i++) {
-						out.write(payload[i]);
+						serialPort.write(payload[i]);
 					}
 				}
 				Boolean runningMessage = runningChannel.tryReceive();
