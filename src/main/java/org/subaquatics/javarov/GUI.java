@@ -13,7 +13,9 @@ public class GUI extends JFrame implements Runnable {
 	public GUI() {
 		JPanel panel = new JPanel(new MigLayout());
 
-		outputarea = new JTextArea(20, 1);
+		// COM ports
+
+		outputarea = new JTextArea(17, 1);
 		outputarea.setEditable(false);
 
 		command = new JTextField(20);
@@ -25,7 +27,10 @@ public class GUI extends JFrame implements Runnable {
 			command.setText("");
 		});
 
-		panel.add(new JScrollPane(outputarea), "w 100%, span 2, wrap");
+		// Add stuff to the layout
+		panel.add(new JLabel("Robot"));
+		panel.add(new JLabel("Controller"), "wrap");
+		panel.add(new JScrollPane(outputarea), "grow, span 2, wrap");
 		panel.add(command, "w 80%");
 		panel.add(commandbutton);
 		
