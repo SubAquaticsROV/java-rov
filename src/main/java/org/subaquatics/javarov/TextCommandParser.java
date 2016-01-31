@@ -36,7 +36,7 @@ public class TextCommandParser {
 							}
 							for (int i=0; i<tokens[1].length(); i++) {
 								byte c = (byte)(tokens[1].charAt(i));
-								robot.send(new EchoByteCommand(c));
+								robot.trySend(new EchoByteCommand(c));
 							}
 							break;
 						default:
@@ -45,9 +45,6 @@ public class TextCommandParser {
 				}
 			}
 		} catch(ChannelClosedException e) {
-			e.printStackTrace();
-			return e.toString();
-		} catch(InterruptedException e) {
 			e.printStackTrace();
 			return e.toString();
 		}

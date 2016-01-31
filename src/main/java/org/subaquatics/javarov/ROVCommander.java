@@ -9,18 +9,16 @@ import org.subaquatics.javarov.commands.Command;
 public class ROVCommander implements Runnable {
 
 	OutputStream serialPort; 
-	ReceiveChannel<Command> commandChannel; 
-	ReceiveChannel<Boolean> runningChannel; // Tells the thread when to close
+	ReceiveChannel<Command> commandChannel;
 
-	public ROVCommander(OutputStream serialPort, ReceiveChannel<Command> commandChannel, ReceiveChannel<Boolean> runningChannel) {
+	public ROVCommander(OutputStream serialPort, ReceiveChannel<Command> commandChannel) {
 		this.serialPort = serialPort;
 		this.commandChannel = commandChannel;
 	}
 
 	public void run() {
 		try {
-			boolean running = true;
-			while (running) {
+			while (commandChannel.isOpen()) {
 				Command command = commandChannel.tryReceive();
 				if (command != null) {
 					serialPort.write(command.getId().getByte());
@@ -30,12 +28,9 @@ public class ROVCommander implements Runnable {
 						serialPort.write(payload[i]);
 					}
 				}
-				Boolean runningMessage = runningChannel.tryReceive();
-				if (runningMessage != null) {
-					running = runningMessage;
-				}
 				Thread.sleep(10);
 			}
+			serialPort.close();
 		} catch(IOException e) {
 			e.printStackTrace();
 		} catch(ChannelClosedException e) {

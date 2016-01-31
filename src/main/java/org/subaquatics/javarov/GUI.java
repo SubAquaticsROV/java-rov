@@ -11,6 +11,8 @@ import java.util.Enumeration;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class GUI extends JFrame implements Runnable {
 
@@ -31,7 +33,9 @@ public class GUI extends JFrame implements Runnable {
 
 	// Business logic stuff
 	private BufferedChannel<Command> commandChannel;
-	private BufferedChannel<Boolean> controllerRunningChannel;
+	private BufferedChannel<String> messageChannel;
+	private BufferedChannel<Boolean> robotRunningChannel = new BufferedChannel<Boolean>(1);
+	private BufferedChannel<Boolean> controllerRunningChannel = new BufferedChannel<Boolean>(1);
 	private TextCommandParser parser;
 	
 	public GUI() {
@@ -42,7 +46,45 @@ public class GUI extends JFrame implements Runnable {
 		robotComboBox = new JComboBox(new String[]{""});
 		robotButton = new JButton("Connect");
 		robotButton.addActionListener((e) -> {
-			robotComboBox.setEnabled(!robotComboBox.isEnabled());
+			if (commandChannel==null) {
+				try {
+					String identifier = (String) robotComboBox.getSelectedItem();
+					CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(identifier);
+					if (portIdentifier != null && !portIdentifier.isCurrentlyOwned()) {
+						CommPort commPort = portIdentifier.open(this.getClass().getName(), 1000);
+						if (commPort instanceof SerialPort) {
+							SerialPort serialPort = (SerialPort) commPort;
+								serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+								InputStream in = serialPort.getInputStream();
+								OutputStream out = serialPort.getOutputStream();
+
+								commandChannel = new BufferedChannel<Command>(16);
+								messageChannel = new BufferedChannel<String>(16);
+
+								parser = new TextCommandParser(commandChannel);
+
+								(new Thread(new ROVCommander(out, commandChannel))).start();
+								(new Thread(new ROVListener(in, messageChannel))).start();
+
+								robotComboBox.setEnabled(false);
+								robotButton.setText("Disconnect");
+						} else {
+							outputarea.append("Error: port not a serial port\n");
+						}
+					} else {
+						outputarea.append("Error: Could not open port.\n");
+					}
+				} catch(Exception err) {
+					err.printStackTrace();
+					return;
+				}
+			} else {
+				commandChannel.close();
+				commandChannel = null;
+				parser = null;
+				robotComboBox.setEnabled(true);
+				robotButton.setText("Connect");
+			}
 		});
 		robotRefreshButton = new JButton("Refresh");
 		robotRefreshButton.addActionListener((e) -> {

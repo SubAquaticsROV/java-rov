@@ -10,12 +10,10 @@ public class ROVListener implements Runnable {
 
 	InputStream input; // Where we listen to stuff from the ROV
 	SendChannel<String> messageOutput; // The place where we log the ROV's messages to
-	ReceiveChannel<Boolean> runningChannel; // Tells the thread when to close
 
-	public ROVListener(InputStream input, SendChannel<String> messageOutput, ReceiveChannel<Boolean> runningChannel) {
+	public ROVListener(InputStream input, SendChannel<String> messageOutput) {
 		this.input = input;
 		this.messageOutput = messageOutput;
-		this.runningChannel = runningChannel;
 	}
 
 	public void run() {
@@ -23,19 +21,13 @@ public class ROVListener implements Runnable {
 			byte[] buffer = new byte[1024];
 			int bytesRead = -1;
 			boolean running = true;
-			while ( (bytesRead = input.read(buffer)) > -1 && running) {
-				messageOutput.send(new String(buffer, 0, bytesRead));
-
-				Boolean runningMessage = runningChannel.tryReceive();
-				if (runningMessage != null) {
-					running = runningMessage;
-				}
+			while ( (bytesRead = input.read(buffer)) > -1 && messageOutput.isOpen()) {
+				messageOutput.trySend(new String(buffer, 0, bytesRead));
 			}
+			input.close();
 		} catch(IOException e) {
 			e.printStackTrace();
 		} catch(ChannelClosedException e) {
-			e.printStackTrace();
-		} catch(InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
