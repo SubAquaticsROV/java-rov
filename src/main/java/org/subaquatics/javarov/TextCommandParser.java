@@ -20,8 +20,8 @@ public class TextCommandParser {
 			String[] lines = input.split("\n");
 			for (String line: lines) {
 				String trimmed = line.trim();
-				if (trimmed.length() > 0 && trimmed.charAt(0)=='#') {
-					continue;
+				if (trimmed.contains("#")) {
+					trimmed = trimmed.substring(0, trimmed.indexOf('#'));
 				}
 				String[] tokens = trimmed.split(" ");
 				if (tokens.length > 0) {
