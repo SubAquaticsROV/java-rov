@@ -28,6 +28,26 @@ public class TextCommandParser {
 					switch(tokens[0].toLowerCase()) {
 						case "set-motorpins":
 							break;
+						case "control-motor":
+							if (tokens.length < 4 || tokens.length > 4) {
+								return "Correct usage: control-motor <id> <direction> <speed>";
+							}
+							int motorId = Integer.parseInt(tokens[1]);
+							ControlMotorCommand.MotorDirection direction = ControlMotorCommand.MotorDirection.STOP;
+							switch (tokens[2].toLowerCase()) {
+							case "left":
+								direction = ControlMotorCommand.MotorDirection.LEFT;
+								break;
+							case "right":
+								direction = ControlMotorCommand.MotorDirection.RIGHT;
+								break;
+							case "stop":
+								direction = ControlMotorCommand.MotorDirection.STOP;
+								break;
+							}
+							int speed = Integer.parseInt(tokens[3]);
+							robot.trySend(new ControlMotorCommand(motorId, direction, speed));
+							break;
 						case "set-pwmbounds":
 							break;
 						case "echo-string":
