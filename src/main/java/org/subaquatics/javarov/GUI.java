@@ -36,6 +36,7 @@ public class GUI extends JFrame implements Runnable {
 	// Business logic stuff
 	private BufferedChannel<Command> commandChannel;
 	private BufferedChannel<String> messageChannel;
+	private BufferedChannel<Boolean> controllerRunningChannel;
 	private TextCommandParser parser;
 	
 	public GUI() {
@@ -84,7 +85,29 @@ public class GUI extends JFrame implements Runnable {
 		controllerComboBox = new JComboBox(new String[]{});
 		controllerButton = new JButton("Start");
 		controllerButton.addActionListener((e) -> {
-			controllerComboBox.setEnabled(!controllerComboBox.isEnabled());
+			if (controllerRunningChannel==null) {
+				String controllerName = (String) controllerComboBox.getSelectedItem();
+				ControllerActions.connect(controllerName, (controller, err) -> {
+					if (err != null) {
+						outputarea.append(err.toString());
+					} else {
+						controllerRunningChannel = new BufferedChannel<Boolean>(1);
+						(new Thread(new Joystick(controller, commandChannel, controllerRunningChannel))).start();
+
+						controllerComboBox.setEnabled(false);
+						controllerButton.setText("Stop");
+					}
+				});
+			} else {
+				try {
+					controllerRunningChannel.trySend(false);
+				} catch(Exception except) {
+					;
+				}
+				controllerRunningChannel = null;
+				robotComboBox.setEnabled(true);
+				robotButton.setText("Start");
+			}
 		});
 		controllerRefreshButton = new JButton("Refresh");
 		controllerRefreshButton.addActionListener((e) -> {

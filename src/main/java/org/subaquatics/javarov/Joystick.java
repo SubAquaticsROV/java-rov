@@ -10,7 +10,7 @@ import net.java.games.input.Controller;
 import net.java.games.input.Event;
 import net.java.games.input.EventQueue;
 
-public class Joystick {
+public class Joystick implements Runnable {
 
 	Controller controller; // Where we listen to stuff from the ROV
 	SendChannel<Command> robot; // A channel to send commands to the robot
@@ -65,8 +65,8 @@ public class Joystick {
     			Thread.sleep(20);
                 // Check if the thread should stop
                 Boolean message = runningChannel.tryReceive();
-                if (message!=null) {
-                    running = message;
+                if (message!=null || !robot.isOpen()) {
+                    running = false;
                 }
             } catch(ChannelClosedException e) {
                 e.printStackTrace();
