@@ -14,6 +14,7 @@ import gnu.io.SerialPort;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.subaquatics.javarov.actions.RobotActions;
+import org.subaquatics.javarov.actions.ControllerActions;
 
 public class GUI extends JFrame implements Runnable {
 
@@ -42,7 +43,7 @@ public class GUI extends JFrame implements Runnable {
 
 		// COM ports
 		robotLabel = new JLabel("Robot: ");
-		robotComboBox = new JComboBox(new String[]{""});
+		robotComboBox = new JComboBox(new String[]{});
 		robotButton = new JButton("Connect");
 		robotButton.addActionListener((e) -> {
 			if (commandChannel==null) {
@@ -80,10 +81,16 @@ public class GUI extends JFrame implements Runnable {
 
 		// Controller ports
 		controllerLabel = new JLabel("Controller: ");
-		controllerComboBox = new JComboBox(new String[]{"Option one", "Option two"});
+		controllerComboBox = new JComboBox(new String[]{});
 		controllerButton = new JButton("Start");
 		controllerButton.addActionListener((e) -> {
 			controllerComboBox.setEnabled(!controllerComboBox.isEnabled());
+		});
+		controllerRefreshButton = new JButton("Refresh");
+		controllerRefreshButton.addActionListener((e) -> {
+			ControllerActions.getControllers((controllers) -> {
+				controllerComboBox.setModel(new DefaultComboBoxModel(controllers));
+			});
 		});
 
 		outputarea = new JTextArea(17, 1);
@@ -108,9 +115,10 @@ public class GUI extends JFrame implements Runnable {
 		panel.add(robotButton);
 		panel.add(robotRefreshButton);
 
-		panel.add(controllerLabel, "split 3");
+		panel.add(controllerLabel, "split 4");
 		panel.add(controllerComboBox);
 		panel.add(controllerButton);
+		panel.add(controllerRefreshButton);
 
 		panel.add(new JScrollPane(outputarea), "grow, span 2");
 		panel.add(command, "growx");
