@@ -73,8 +73,9 @@ public class GUI extends JFrame implements Runnable {
 		});
 		robotRefreshButton = new JButton("Refresh");
 		robotRefreshButton.addActionListener((e) -> {
-			String[] ports = getSerialPorts();
-			robotComboBox.setModel(new DefaultComboBoxModel(ports));
+			RobotActions.getSerialPorts((ports) -> {
+				robotComboBox.setModel(new DefaultComboBoxModel(ports));
+			});
 		});
 
 		// Controller ports
@@ -129,19 +130,5 @@ public class GUI extends JFrame implements Runnable {
 		initUI();
 
 		this.setVisible(true);
-	}
-
-	private String[] getSerialPorts() {
-		Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-		ArrayList<String> ports = new ArrayList<String>();
-		while(portEnum.hasMoreElements()) {
-			CommPortIdentifier portIdentifier = portEnum.nextElement();
-			ports.add(portIdentifier.getName());
-		}
-		String[] portArray = new String[ports.size()];
-		for (int i=0; i<ports.size(); i++) {
-			portArray[i] = ports.get(i);
-		}
-		return portArray;
 	}
 }
