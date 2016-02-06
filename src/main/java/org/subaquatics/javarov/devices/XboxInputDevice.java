@@ -24,6 +24,8 @@ public class XboxInputDevice implements InputDevice {
 	}
 
 	public void update() {
+		shouldUpdate = false;
+
 		EventQueue queue = controller.getEventQueue();
 		Event event = new Event();
 		controller.poll();
@@ -52,6 +54,9 @@ public class XboxInputDevice implements InputDevice {
 					if (throttle < -1) {
 						throttle = -1;
 					}
+					break;
+				case "7": // Start button
+					shouldUpdate = true;
 					break;
 				default:
 					System.out.println(event.getComponent().getIdentifier().getName() + ": " + event.getValue());
