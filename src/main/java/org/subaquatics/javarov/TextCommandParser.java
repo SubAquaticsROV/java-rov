@@ -25,6 +25,14 @@ public class TextCommandParser {
 			if (tokens.length > 0) {
 				switch(tokens[0].toLowerCase()) {
 					case "set-motorpins":
+						if (tokens.length < 5 || tokens.length > 5) {
+							return "Correct usage: control-motor <id> <pwm> <left> <right>";
+						}
+						int id = Integer.parseInt(tokens[1]);
+						int pwm = Integer.parseInt(tokens[2]);
+						int left = Integer.parseInt(tokens[3]);
+						int right = Integer.parseInt(tokens[4]);
+						robot.send(new SetMotorPinsCommand(id, pwm, left, right));
 						break;
 					case "control-motor":
 						if (tokens.length < 4 || tokens.length > 4) {
@@ -48,7 +56,7 @@ public class TextCommandParser {
 						break;
 					case "set-pwmbounds":
 						if (tokens.length < 3 || tokens.length > 3) {
-							return "Correct usage: control-motor <min> <max>";
+							return "Correct usage: set-pwmbounds <min> <max>";
 						}
 						int min = Integer.parseInt(tokens[1]);
 						int max = Integer.parseInt(tokens[2]);
