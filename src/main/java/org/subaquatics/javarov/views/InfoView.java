@@ -1,4 +1,6 @@
-package org.subaquatics.javarov;
+package org.subaquatics.javarov.views;
+
+import org.subaquatics.javarov.info.Info;
 
 public interface InfoView {
 

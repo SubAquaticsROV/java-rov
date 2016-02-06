@@ -17,7 +17,7 @@ public class XboxInputDevice implements InputDevice {
 	public XboxInputDevice(String controllerName) {
 		Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
 		for (Controller c: controllers) {
-			if (c.getComponent().getIdentifier().getName().eqauls(controllerName)) {
+			if (c.getName().equals(controllerName)) {
 				controller = c;
 			}
 		}

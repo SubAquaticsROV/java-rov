@@ -26,21 +26,11 @@ public class SetupDialog extends JFrame implements Runnable {
 		robotLabel = new JLabel("Robot: ");
 		robotComboBox = new JComboBox(new String[]{});
 		robotRefreshButton = new JButton("Refresh");
-		robotRefreshButton.addActionListener((e) -> {
-			RobotActions.getSerialPorts((ports) -> {
-				robotComboBox.setModel(new DefaultComboBoxModel(ports));
-			});
-		});
 
 		// Controller ports
 		controllerLabel = new JLabel("Controller: ");
 		controllerComboBox = new JComboBox(new String[]{});
 		controllerRefreshButton = new JButton("Refresh");
-		controllerRefreshButton.addActionListener((e) -> {
-			ControllerActions.getControllers((controllers) -> {
-				controllerComboBox.setModel(new DefaultComboBoxModel(controllers));
-			});
-		});
 
 		startButton = new JButton("Start");
 

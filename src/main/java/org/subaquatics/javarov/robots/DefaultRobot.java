@@ -1,5 +1,13 @@
 package org.subaquatics.javarov.robots;
 
+import org.subaquatics.javarov.info.Info;
+import org.subaquatics.javarov.info.MessageInfo;
+import org.subaquatics.javarov.commands.Command;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+
 public class DefaultRobot implements Robot {
 
 	private ArrayList<Command> commands = new ArrayList<>();
@@ -32,7 +40,7 @@ public class DefaultRobot implements Robot {
 		ArrayList<Info> info = new ArrayList<>();
 		byte[] buffer = new byte[1024];
 		int bytesRead = -1;
-		while ( (bytesRead = input.read(buffer)) > -1) {
+		while ( (bytesRead = in.read(buffer)) > -1) {
 			info.add(new MessageInfo(new String(buffer, 0, bytesRead)));
 		}
 		return info;

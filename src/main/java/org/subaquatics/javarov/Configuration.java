@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Configuration {
 
-	public ArrayList<Motor> motors;
+	public ArrayList<MotorPins> motors;
 	public Range pwmBounds;
 
 	public class MotorPins {

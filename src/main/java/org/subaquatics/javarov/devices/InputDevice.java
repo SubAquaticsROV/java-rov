@@ -1,4 +1,4 @@
-package org.subaquatics.javarov;
+package org.subaquatics.javarov.devices;
 
 public interface InputDevice {
 

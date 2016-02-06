@@ -1,9 +1,12 @@
 package org.subaquatics.javarov;
 
 import org.subaquatics.javarov.info.Info;
+import org.subaquatics.javarov.views.InfoView;
+import org.subaquatics.javarov.devices.InputDevice;
+import org.subaquatics.javarov.robots.Robot;
 import org.subaquatics.javarov.commands.ControlMotorCommand;
 import org.subaquatics.javarov.commands.SetMotorPinsCommand;
-import org.subaquatics.javarov.commands.SetPWMBounds;
+import org.subaquatics.javarov.commands.SetPWMBoundsCommand;
 
 // A note: most of this is pseudocode at this point.
 public class MainLoop {
@@ -22,6 +25,9 @@ public class MainLoop {
 	private int topBackLeftMotor = 7;
 	private int topBackRightMotor = 8;
 
+	private static ControlMotorCommand.MotorDirection LEFT = ControlMotorCommand.MotorDirection.LEFT;
+	private static ControlMotorCommand.MotorDirection RIGHT = ControlMotorCommand.MotorDirection.RIGHT;
+
 	public void update() {
 		device.update();
 
@@ -30,7 +36,7 @@ public class MainLoop {
 			for (Configuration.MotorPins motor: configuration.motors) {
 				robot.send(new SetMotorPinsCommand(motor.id, motor.pwm, motor.left, motor.right));
 			}
-			robot.send(new SetPWMBounds(configuration.pwmBounds.min, configuration.pwmBounds.max));
+			robot.send(new SetPWMBoundsCommand(configuration.pwmBounds.min, configuration.pwmBounds.max));
 		}
 
 		{ // Code to move the robot forward
@@ -52,7 +58,7 @@ public class MainLoop {
 		{ // Code to move the robot up and down
 			int upSpeed = (int) device.verticalValue() * 255;
 			boolean up = upSpeed > 0;
-			upSpeed = up > upSpeed : -upSpeed;
+			upSpeed = up ? upSpeed : -upSpeed;
 			robot.send(new ControlMotorCommand(topFrontLeftMotor, up ? LEFT : RIGHT, upSpeed));
 			robot.send(new ControlMotorCommand(topFrontRightMotor, up ? LEFT : RIGHT, upSpeed));
 			robot.send(new ControlMotorCommand(topBackLeftMotor, up ? LEFT : RIGHT, upSpeed));

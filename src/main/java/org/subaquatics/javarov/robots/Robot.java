@@ -1,4 +1,9 @@
-package org.subaquatics.javarov;
+package org.subaquatics.javarov.robots;
+
+import java.util.ArrayList;
+
+import org.subaquatics.javarov.info.Info;
+import org.subaquatics.javarov.commands.Command;
 
 public interface Robot {
 
