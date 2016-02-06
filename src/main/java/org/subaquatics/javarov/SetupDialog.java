@@ -20,7 +20,7 @@ public class SetupDialog extends JFrame implements Runnable {
 	private JButton startButton;
 	
 	public SetupDialog() {
-		JPanel panel = new JPanel(new MigLayout("wrap 3"));
+		JPanel panel = new JPanel(new MigLayout("wrap 3, fill"));
 
 		// COM ports
 		robotLabel = new JLabel("Robot: ");
@@ -33,19 +33,23 @@ public class SetupDialog extends JFrame implements Runnable {
 		controllerRefreshButton = new JButton("Refresh");
 
 		startButton = new JButton("Start");
+		startButton.addActionListener((e) -> {
+			this.setVisible(false);
+			(new Thread(new RunningGUI())).start();
+		});
 
 		// Add stuff to the layout
 		panel.add(robotLabel);
-		panel.add(robotComboBox);
+		panel.add(robotComboBox, "growx");
 		panel.add(robotRefreshButton);
 
 		panel.add(controllerLabel);
-		panel.add(controllerComboBox);
+		panel.add(controllerComboBox, "growx");
 		panel.add(controllerRefreshButton);
 
 		panel.add(startButton, "span 3");
 		
-		add(panel, BorderLayout.SOUTH);
+		add(panel, BorderLayout.CENTER);
 	}
 
 	private void initUI() {
