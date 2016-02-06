@@ -3,6 +3,7 @@ package org.subaquatics.javarov.robots;
 import org.subaquatics.javarov.info.Info;
 import org.subaquatics.javarov.info.MessageInfo;
 import org.subaquatics.javarov.commands.Command;
+import org.subaquatics.javarov.actions.RobotActions;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,9 +16,14 @@ public class DefaultRobot implements Robot {
 	private InputStream in;
 	private OutputStream out;
 
-	public DefaultRobot(InputStream in, OutputStream out) {
+	public DefaultRobot(String port) {
 		this.in = in;
 		this.out = out;
+		RobotActions.connect(port, (serialIn, serialOut, err) -> {
+			// hope that err == null
+			in = serialIn;
+			out = serialOut;
+		});
 	}
 
 	public void send(Command command) {

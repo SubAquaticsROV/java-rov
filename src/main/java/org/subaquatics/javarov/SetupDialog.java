@@ -5,8 +5,12 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import net.miginfocom.swing.MigLayout;
+
 import org.subaquatics.javarov.actions.RobotActions;
 import org.subaquatics.javarov.actions.ControllerActions;
+import org.subaquatics.javarov.robots.DefaultRobot;
+import org.subaquatics.javarov.robots.Robot;
+import org.subaquatics.javarov.devices.XboxInputDevice;
 
 public class SetupDialog extends JFrame implements Runnable {
 
@@ -20,8 +24,8 @@ public class SetupDialog extends JFrame implements Runnable {
 	private JButton controllerRefreshButton;
 
 	private JButton startButton;
-	
-	public SetupDialog() {
+
+	private void initUI() {
 		JPanel panel = new JPanel(new MigLayout("wrap 3, fill"));
 
 		// COM ports
@@ -47,7 +51,29 @@ public class SetupDialog extends JFrame implements Runnable {
 		startButton = new JButton("Start");
 		startButton.addActionListener((e) -> {
 			this.setVisible(false);
-			(new Thread(new RunningGUI())).start();
+
+			RunningGUI view = new RunningGUI();
+			XboxInputDevice device = new XboxInputDevice((String)controllerComboBox.getSelectedItem());
+			Configuration config = new Configuration();
+			Robot robot = new DefaultRobot((String)robotComboBox.getSelectedItem());
+
+			MainLoop binder = new MainLoop();
+			binder.setInfoView(view);
+			binder.setRobot(robot);
+			binder.setConfiguration(config);
+			binder.setInputDevice(device);
+
+			(new Thread(view)).start();
+			(new Thread(() -> {
+				while (view.isVisible()) {
+					binder.update();
+					try {
+						Thread.sleep(20);
+					} catch(InterruptedException err) {
+						err.printStackTrace();
+					}
+				}
+			})).start();
 		});
 
 		// Add stuff to the layout
@@ -62,9 +88,7 @@ public class SetupDialog extends JFrame implements Runnable {
 		panel.add(startButton, "span 3");
 		
 		add(panel, BorderLayout.CENTER);
-	}
 
-	private void initUI() {
 		setTitle("GUI");
 		setSize(500, 400);
 		setLocationRelativeTo(null);
