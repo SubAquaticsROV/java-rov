@@ -24,6 +24,7 @@ public class XboxInputDevice implements InputDevice {
 	}
 
 	public void update() {
+		System.out.println("Hello, world!");
 		EventQueue queue = controller.getEventQueue();
 		Event event = new Event();
 		controller.poll();

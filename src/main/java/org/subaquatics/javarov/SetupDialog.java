@@ -65,6 +65,15 @@ public class SetupDialog extends JFrame implements Runnable {
 
 			(new Thread(view)).start();
 			(new Thread(() -> {
+				// Wait until the gui is visible
+				while(!view.isVisible()) {
+					try {
+						Thread.sleep(20);
+					} catch(InterruptedException err) {
+						err.printStackTrace();
+					}
+				}
+				// Run as long as the GUI is open
 				while (view.isVisible()) {
 					binder.update();
 					try {

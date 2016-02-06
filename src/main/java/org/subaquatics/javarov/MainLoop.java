@@ -1,6 +1,7 @@
 package org.subaquatics.javarov;
 
 import org.subaquatics.javarov.info.Info;
+import org.subaquatics.javarov.info.MessageInfo;
 import org.subaquatics.javarov.views.InfoView;
 import org.subaquatics.javarov.devices.InputDevice;
 import org.subaquatics.javarov.robots.Robot;

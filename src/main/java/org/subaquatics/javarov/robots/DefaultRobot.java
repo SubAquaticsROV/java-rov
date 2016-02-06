@@ -47,7 +47,7 @@ public class DefaultRobot implements Robot {
 		ArrayList<Info> info = new ArrayList<>();
 		byte[] buffer = new byte[1024];
 		int bytesRead = -1;
-		while ( (bytesRead = in.read(buffer)) > -1) {
+		if ( (bytesRead = in.read(buffer)) > -1) {
 			info.add(new MessageInfo(new String(buffer, 0, bytesRead)));
 		}
 		return info;
