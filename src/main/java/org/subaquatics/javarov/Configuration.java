@@ -47,4 +47,16 @@ public class Configuration {
 		return configuration;
 	}
 
+	public static final Configuration DEFUALT = fromString(
+		"set-pwmbounds 64 200\n"+
+		"set-motorpins 1 11 25 27\n"+
+		"set-motorpins 2 6 28 30\n"+
+		"set-motorpins 3 3 38 32\n"+
+		"set-motorpins 4 9 37 39\n"+
+		"set-motorpins 5 10 29 31\n"+
+		"set-motorpins 6 5 26 24\n"+
+		"set-motorpins 7 2 36 34\n"+
+		"set-motorpins 8 8 35 33\n"
+	);
+
 }

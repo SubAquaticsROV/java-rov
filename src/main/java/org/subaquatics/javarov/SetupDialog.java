@@ -54,7 +54,7 @@ public class SetupDialog extends JFrame implements Runnable {
 
 			RunningGUI view = new RunningGUI();
 			XboxInputDevice device = new XboxInputDevice((String)controllerComboBox.getSelectedItem());
-			Configuration config = new Configuration();
+			Configuration config = Configuration.DEFAULT;
 			Robot robot = new DefaultRobot((String)robotComboBox.getSelectedItem());
 
 			MainLoop binder = new MainLoop();
