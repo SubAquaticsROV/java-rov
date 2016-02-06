@@ -47,7 +47,7 @@ public class Configuration {
 		return configuration;
 	}
 
-	public static final Configuration DEFUALT = fromString(
+	public static final Configuration DEFAULT = fromString(
 		"set-pwmbounds 64 200\n"+
 		"set-motorpins 1 11 25 27\n"+
 		"set-motorpins 2 6 28 30\n"+

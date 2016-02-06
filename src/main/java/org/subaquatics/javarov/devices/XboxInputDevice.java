@@ -29,12 +29,12 @@ public class XboxInputDevice implements InputDevice {
 		controller.poll();
 		while(queue.getNextEvent(event)) {
 			switch(event.getComponent().getIdentifier().getName()) {
-				case "x": // Left joystick
+				/*case "x": // Left joystick
 					break;
 				case "y": // Left joystick
 					break;
 				case "z": // Triggers
-					break;
+					break;*/
 				case "rx": // Right joystick
 					horizontal = event.getValue();
 					break;
