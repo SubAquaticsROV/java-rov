@@ -17,6 +17,7 @@ public class RunningGUI extends JFrame implements Runnable, InfoView {
 		JPanel panel = new JPanel(new MigLayout("fill"));
 
 		outputArea = new JTextArea(15, 20);
+		outputArea.setEditable(true);
 
 		// Add stuff to the layout
 		panel.add(new JScrollPane(outputArea), "grow");
@@ -37,6 +38,7 @@ public class RunningGUI extends JFrame implements Runnable, InfoView {
 
 	public void append(Info info) {
 		outputArea.append(info.getHumanReadableString());
+		outputArea.append("\n");
 	}
 
 }
