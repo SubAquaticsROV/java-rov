@@ -6,6 +6,7 @@ import org.subaquatics.javarov.commands.Command;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class DefaultRobot implements Robot {
@@ -22,8 +23,8 @@ public class DefaultRobot implements Robot {
 	public void send(Command command) {
 		commands.add(command);
 	}
-	
-	public void flush() {
+
+	private void pflush() throws IOException {
 		for (Command command: commands) {
 			out.write(command.getId().getByte());
 			byte[] payload = command.getData();
@@ -36,7 +37,7 @@ public class DefaultRobot implements Robot {
 		}
 	}
 
-	public ArrayList<Info> read() {
+	private ArrayList<Info> pread() throws IOException {
 		ArrayList<Info> info = new ArrayList<>();
 		byte[] buffer = new byte[1024];
 		int bytesRead = -1;
@@ -44,6 +45,22 @@ public class DefaultRobot implements Robot {
 			info.add(new MessageInfo(new String(buffer, 0, bytesRead)));
 		}
 		return info;
+	}
+	
+	public void flush() {
+		try {
+			pflush();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public ArrayList<Info> read() {
+		try {
+			return pread();
+		} catch (Exception e) {
+			return new ArrayList<>();
+		}
 	}
 
 }
