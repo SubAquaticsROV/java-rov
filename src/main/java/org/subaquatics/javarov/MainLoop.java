@@ -33,10 +33,10 @@ public class MainLoop {
 
 		// Does the configuration need to be sent to the robot
 		if (device.shouldUpdateConfig()) {
-			for (Configuration.MotorPins motor: configuration.motors) {
-				robot.send(new SetMotorPinsCommand(motor.id, motor.pwm, motor.left, motor.right));
+			for (SetMotorPinsCommand motorPins: configuration.motors) {
+				robot.send(motorPins);
 			}
-			robot.send(new SetPWMBoundsCommand(configuration.pwmBounds.min, configuration.pwmBounds.max));
+			robot.send(configuration.pwmBounds);
 		}
 
 		{ // Code to move the robot forward

@@ -21,13 +21,14 @@ public class Configuration {
 				switch(tokens[0].toLowerCase()) {
 					case "set-motorpins":
 						if (tokens.length < 5 || tokens.length > 5) {
-							return "Correct usage: control-motor <id> <pwm> <left> <right>";
+							System.out.println("Correct usage: control-motor <id> <pwm> <left> <right>");
+							continue;
 						}
 						int id = Integer.parseInt(tokens[1]);
 						int pwm = Integer.parseInt(tokens[2]);
 						int left = Integer.parseInt(tokens[3]);
 						int right = Integer.parseInt(tokens[4]);
-						configuration.add(new SetMotorPinsCommand(id, pwm, left, right));
+						configuration.motors.add(new SetMotorPinsCommand(id, pwm, left, right));
 						break;
 					case "set-pwmbounds":
 						if (tokens.length < 3 || tokens.length > 3) {
@@ -36,10 +37,10 @@ public class Configuration {
 						}
 						int min = Integer.parseInt(tokens[1]);
 						int max = Integer.parseInt(tokens[2]);
-						configuration.add(new SetPWMBoundsCommand(min, max));
+						configuration.pwmBounds = new SetPWMBoundsCommand(min, max);
 						break;
 					default:
-						return "Error: \""+tokens[0]+"\" is not a configuration command.";
+						System.out.println("Error: \""+tokens[0]+"\" is not a configuration command.");
 				}
 			}
 		}
