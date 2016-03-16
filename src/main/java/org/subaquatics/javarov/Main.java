@@ -63,37 +63,6 @@ public class Main
 			}
 		}
 	}
-
-    //Inner class declaration
-    //Uses the runnable interface to allow for multi-threading
-    //Multi-threading = running multiple things simultaneously
-	public static class SerialReader implements Runnable
-	{
-		InputStream in;
-        
-        //Constructor
-		public SerialReader(InputStream in)
-		{
-			this.in = in;
-		}
-        
-		public void run()
-		{
-			byte[] buffer = new byte[1024];
-			int len = -1;
-			try
-			{
-				while( (len=this.in.read(buffer)) > -1 && running)
-				{
-					System.out.print(new String(buffer,0,len));
-				}
-			}
-			catch( IOException e )
-			{
-				e.printStackTrace();
-			}
-		}
-	}
     
     //Inner class declaration
     //Uses the runnable interface to allow for multi-threading
@@ -122,7 +91,7 @@ public class Main
 					{
 						case "echo":
 						{
-							String echoString = input.next();
+							String echoString = input.nextLine();
 							for(int i=0; i < echoString.length(); i++)
 							{
 								bot.echo((int)echoString.charAt(i));
