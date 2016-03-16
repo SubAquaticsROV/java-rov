@@ -23,19 +23,19 @@ public class RovReader implements Runnable {
 				int responseType = this.in.read();
 				switch(responseType) {
 					case 0x10:
-						System.out.println("[Error]"+logMessage(buffer));
+						System.out.println("[Error]"+logMessage());
 						break;
 					case 0x11:
-						System.out.println("[Warning]"+logMessage(buffer));
+						System.out.println("[Warning]"+logMessage());
 						break;
 					case 0x12:
-						System.out.println("[Info]"+logMessage(buffer));
+						System.out.println("[Info]"+logMessage());
 						break;
 					case 0x13:
-						System.out.println("[Debug]"+logMessage(buffer));
+						System.out.println("[Debug]"+logMessage());
 						break;
 					case 0x20:
-						System.out.println("[Sensor Voltage]"+readInt(buffer));
+						System.out.println("[Sensor Voltage]"+readInt());
 						break;
 				}
 			}
@@ -46,7 +46,7 @@ public class RovReader implements Runnable {
 		}
 	}
 
-	private String logMessage(byte[] buffer) throws IOException {
+	private String logMessage() throws IOException {
 		int length = this.in.read();
 		int bytesRead = 0;
 		StringBuilder builder = new StringBuilder();
@@ -57,8 +57,9 @@ public class RovReader implements Runnable {
 		return builder.toString();
 	}
 
-	private int readInt(byte[] buffer) throws IOException {
-		this.in.read(buffer, 0, 4);
+	private int readInt() throws IOException {
+		int[] buffer = new int[4];
+		for (int i=0; i<buffer.length; i++) buffer[i] = this.in.read();
 		return (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | (buffer[3]);
 	}
 }
