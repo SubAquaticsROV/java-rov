@@ -17,13 +17,11 @@ import net.java.games.input.EventQueue;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 
-public class Main
-{
+public class Main {
 
 	public static boolean running;
 
-	public void connect(String portName) throws Exception
-	{
+	public void connect(String portName) throws Exception {
 	    //Calling RXTX library to get the port the arduino is on - assumed to be
 	    //"COM3" in this instance
 		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
@@ -63,8 +61,7 @@ public class Main
 		}
 	}
 
-	public static class JoystickWriter implements Runnable // Reads from a joystick and writes to the ROV
-	{
+	public static class JoystickWriter implements Runnable { // Reads from a joystick and writes to the ROV
 		IRobot robot;
 		Controller controller;
 
@@ -117,19 +114,15 @@ public class Main
 
 				((BufferedRobot)robot).update();
 
-				try
-				{
+				try {
 					Thread.sleep(20);
-				}
-				catch(InterruptedException e)
-				{
+				} catch(InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 
-		public void move_y(double y)
-		{
+		public void move_y(double y) {
 			y *= 255;
 
         	if (y > 0) {
@@ -205,13 +198,10 @@ public class Main
         }
 	}
 
-	public static void main(String[] args)
-	{
-		try
-		{
+	public static void main(String[] args) {
+		try {
 			java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-			while (portEnum.hasMoreElements() )
-			{
+			while (portEnum.hasMoreElements() ) {
 				CommPortIdentifier portIdentifier = portEnum.nextElement();
 				System.out.println(portIdentifier.getName());
 			}
