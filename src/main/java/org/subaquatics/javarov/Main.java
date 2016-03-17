@@ -12,11 +12,10 @@ import java.io.OutputStream;
 
 import java.util.Scanner;
 
-import net.java.games.input.Controller;
 import net.java.games.input.Event;
 import net.java.games.input.EventQueue;
-import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Component;
+import net.java.games.input.Controller;
 
 public class Main
 {
@@ -55,117 +54,11 @@ public class Main
                 //This allows full-duplex (two-way) communication
                 //The in and out streams are passed in
 				(new Thread(new RovReader(in))).start();
-				(new Thread(new SerialWriter(out))).start();
+				(new Thread(new CommandLine(out))).start();
 			}
 			else //If it is not a serial port, say so
 			{
 				System.out.println("Error: Only serial ports are handled by this example.");
-			}
-		}
-	}
-    
-    //Inner class declaration
-    //Uses the runnable interface to allow for multi-threading
-    //Multi-threading = running multiple things simultaneously
-	public static class SerialWriter implements Runnable
-	{
-		OutputStream out;
-    
-        //Constructor
-		public SerialWriter(OutputStream out)
-		{
-			this.out = out;
-		}
-
-		public void run()
-		{
-			byte[] buffer = new byte[1024];
-			int len = -1;
-			try
-			{
-				Scanner input = new Scanner(System.in);
-				IRobot bot = new BufferedRobot(this.out);
-				while( running )
-				{
-					switch(input.next())
-					{
-						case "echo":
-						{
-							String echoString = input.nextLine();
-							for(int i=0; i < echoString.length(); i++)
-							{
-								bot.echo((int)echoString.charAt(i));
-							}
-							break;
-						}
-						case "configureMotorPWMBounds":
-						{
-							bot.configureMotorPWMBounds(
-								input.nextInt(),
-								input.nextInt()
-								);
-							break;
-						}
-						case "configureMotorPins":
-						{
-							bot.configureMotorPins(
-								input.nextInt(),
-								input.nextInt(),
-								input.nextInt(),
-								input.nextInt()
-								);
-							break;
-						}
-						case "controlMotor":
-						{
-							bot.controlMotor(
-								input.nextInt(),
-								input.nextInt(),
-								input.nextInt()
-								);
-							break;
-						}
-						case "listControllers":
-						{
-							Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
-							for(int i=0; i<controllers.length; i++)
-							{
-								System.out.println(i + ": " + controllers[i].getName() + ", " + controllers[i].getType());
-							}
-							break;
-						}
-						case "startController":
-						{
-							int i = input.nextInt();
-							Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
-							if(i > controllers.length)
-							{
-								System.out.println("Invalid controller number \""+i+"\".");
-								System.out.println("List available controllers with \"listControllers\".");
-							}
-							else
-							{
-								new Thread(new JoystickWriter(bot, controllers[i])).start();
-								System.out.println("Starting controller listening thread.");
-							}
-							break;
-						}
-						case "exit":
-						{
-							running = false;
-							break;
-						}
-						default:
-						{
-							System.out.println("Unknown command.");
-						}
-					}
-					input.nextLine();
-				}
-			}
-			catch( Exception e )
-			{
-				e.printStackTrace();
 			}
 		}
 	}
