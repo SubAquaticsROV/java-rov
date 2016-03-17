@@ -36,7 +36,7 @@ public class CommandLine implements Runnable
 
 	public void run() {
 		Scanner input = new Scanner(System.in);
-		Pattern commandPattern = Pattern.compile("([a-zA-z0-9_\\-]+)\\s*([a-zA-z0-9_\\-]*)");
+		Pattern commandPattern = Pattern.compile("([a-zA-z0-9_\\-]+)\\s*([a-zA-z0-9_\\-]*)*");
 		while( true ) {
 			Matcher m = commandPattern.matcher(input.nextLine());
 			if(m.matches()) {
@@ -60,7 +60,7 @@ public class CommandLine implements Runnable
 			"[string]",
 			"Get help.",
 			(arg) -> {
-				if (arg=="") {
+				if (arg==null || arg.equals("")) {
 					for (Command command: commands.values()) {
 						System.out.println(command.getName()+"\t"+command.getDescription());
 					}
