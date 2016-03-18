@@ -36,20 +36,22 @@ public class CommandLine implements Runnable
 
 	public void run() {
 		Scanner input = new Scanner(System.in);
-		Pattern commandPattern = Pattern.compile("([a-zA-z0-9_\\-]+)\\s*([a-zA-z0-9_\\-]*)*");
+		Pattern commandPattern = Pattern.compile("\\s+");
 		while( true ) {
-			Matcher m = commandPattern.matcher(input.nextLine());
-			if(m.matches()) {
-				String commandString = m.group(1);
-				String arg = m.group(2);
-				if(commands.containsKey(commandString)) {
-					Command command = commands.get(commandString);
-					if(!command.execute(arg)) {
-						System.out.println("Correct usage: "+command.getName()+"\t"+command.getParameters());
-					}
-				} else {
-					System.out.println("Unknown command. Type 'help' for help.");
+			String[] args = commandPattern.split(input.nextLine(), 2);
+			String commandString = args[0];
+			String arg = "";
+			if (args.length >= 2) {
+				arg = args[1];
+			}
+			
+			if(commands.containsKey(commandString)) {
+				Command command = commands.get(commandString);
+				if(!command.execute(arg)) {
+					System.out.println("Correct usage: "+command.getName()+"\t"+command.getParameters());
 				}
+			} else {
+				System.out.println("Unknown command. Type 'help' for help.");
 			}
 		}
 	}
