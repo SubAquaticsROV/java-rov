@@ -10,8 +10,6 @@ import java.util.regex.Matcher;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
-import org.subaquatics.javarov.Main.JoystickWriter;
-
 //Inner class declaration
 //Uses the runnable interface to allow for multi-threading
 //Multi-threading = running multiple things simultaneously
@@ -156,10 +154,10 @@ public class CommandLine implements Runnable
 			}
 		));
 
-		Pattern startControllerPattern = Pattern.compile("(\\d+)");
+		Pattern startControllerPattern = Pattern.compile("(\\d+)\\s+(\\w+)");
 		addCommand(new Command(
 			"start-controller",
-			"<controller>",
+			"<controller> <mapping>",
 			"Begin controlling the rov with a controller.",
 			(arg) -> {
 				Matcher m = startControllerPattern.matcher(arg);
@@ -170,7 +168,7 @@ public class CommandLine implements Runnable
 						System.out.println("Invalid controller number \""+controller+"\".");
 						System.out.println("List available controllers with \"show-controllers\".");
 					} else {
-						new Thread(new JoystickWriter(bot, controllers[controller])).start();
+						new Thread(new JoystickHandler(bot, controllers[controller], m.group(2))).start();
 						System.out.println("Starting controller listening thread.");
 					}
 					return true;
