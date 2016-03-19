@@ -26,7 +26,7 @@ public class CommandLine implements Runnable
 	public CommandLine(OutputStream out) {
 		commands = new HashMap<>();
 		this.out = out;
-		this.bot = new BufferedRobot(this.out);
+		this.bot = new Robot(this.out);
 		initCommands();
 	}
 

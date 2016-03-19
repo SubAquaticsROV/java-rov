@@ -112,8 +112,6 @@ public class Main {
 					}
 				}
 
-				((BufferedRobot)robot).update();
-
 				try {
 					Thread.sleep(20);
 				} catch(InterruptedException e) {
