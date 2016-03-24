@@ -176,5 +176,18 @@ public class CommandLine implements Runnable
 				return false;
 			}
 		));
+
+		addCommand(new Command(
+			"get-version",
+			"",
+			"Get the version of code running on the Arduino.",
+			(arg) -> {
+				if (arg.trim().equals("")) {
+					bot.version();
+					return true;
+				}
+				return false;
+			}
+		));
 	}
 }

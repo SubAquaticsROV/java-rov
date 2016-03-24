@@ -74,4 +74,13 @@ public class Robot implements IRobot
 		}
 	}
 
+	@Override
+	public void version() {
+		try {
+			out.write(0xF1);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
 }
