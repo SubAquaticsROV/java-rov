@@ -60,6 +60,25 @@ public class Robot implements IRobot
 		}
 	}
 
+	public void configureStepperPins(int directionPin, int stepPin) {
+		try {
+			out.write(0x20);
+			out.write(directionPin & 0xFF);
+			out.write(stepPin & 0xFF);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
+	public void controlStepper(boolean direction) {
+		try {
+			out.write(0x21);
+			out.write(direction ? 0 : 1);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
 	@Override
 	public void echo(int byteInt)
 	{

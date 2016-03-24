@@ -141,6 +141,39 @@ public class CommandLine implements Runnable
 			}
 		));
 
+		Pattern stepperPinsPattern = Pattern.compile("(\\d+)\\s+(\\d+)");
+		addCommand(new Command(
+			"configure-stepperpins",
+			"<direction-pin> <step-pin>",
+			"Configure the stepper to use the specified pins.",
+			(arg) -> {
+				Matcher m = stepperPinsPattern.matcher(arg);
+				if(m.matches()) {
+					int directionPin = Integer.parseInt(m.group(1));
+					int stepPin = Integer.parseInt(m.group(2));
+					bot.configureStepperPins(directionPin, stepPin);
+					return true;
+				}
+				return false;
+			}
+		));
+
+		Pattern controlStepperPattern = Pattern.compile("(\\d+)");
+		addCommand(new Command(
+			"control-stepper",
+			"<direction>",
+			"Step the stepper",
+			(arg) -> {
+				Matcher m = controlStepperPattern.matcher(arg);
+				if(m.matches()) {
+					int direction = Integer.parseInt(m.group(1));
+					bot.controlStepper(direction==1);
+					return true;
+				}
+				return false;
+			}
+		));
+
 		addCommand(new Command(
 			"show-controllers",
 			"",
