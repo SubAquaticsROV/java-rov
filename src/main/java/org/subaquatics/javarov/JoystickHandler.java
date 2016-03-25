@@ -33,6 +33,8 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
     boolean strafeRight;
     boolean openClaw;
     boolean closeClaw;
+    boolean disableClaw;
+    boolean disableClawJustPressed;
 
 	public JoystickHandler(IRobot robot, Controller controller, String mappingFile) {
 		this.robot = robot;
@@ -93,8 +95,10 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                         openClaw = event.getValue()>=0.5;
                         break;
                     case CLOSE_CLAW:
-                        closeClaw = event.getValue()>=0.5;
-						break;
+                        if (event.getValue()>=0.5) {
+                            disableClawJustPressed = true;
+                        }
+                        break;
 				}
 			}
 
@@ -144,16 +148,24 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                 robot.controlMotor(8, 0, 0);
             }
 
-            if (openClaw && !closeClaw) {
-                robot.controlStepper(true);
-                robot.controlStepper(true);
-                robot.controlStepper(true);
-                robot.controlStepper(true);
-            } else if(closeClaw && !openClaw) {
-                robot.controlStepper(false);
-                robot.controlStepper(false);
-                robot.controlStepper(false);
-                robot.controlStepper(false);
+            if (!disableClaw) {
+                if (openClaw && !closeClaw) {
+                    robot.controlStepper(true);
+                    robot.controlStepper(true);
+                    robot.controlStepper(true);
+                    robot.controlStepper(true);
+                } else if(closeClaw && !openClaw) {
+                    robot.controlStepper(false);
+                    robot.controlStepper(false);
+                    robot.controlStepper(false);
+                    robot.controlStepper(false);
+                }
+            }
+
+            if (disableClawJustPressed) {
+                disableClawJustPressed = false;
+                disableClaw = !disableClaw;
+                robot.setStepperState(disableClaw);
             }
 
             // !!!!! END OF CONTROLLING LOGIC !!!!!
@@ -173,6 +185,7 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
         STRAFE_LEFT,
         STRAFE_RIGHT,
         OPEN_CLAW,
-        CLOSE_CLAW;
+        CLOSE_CLAW,
+        DISABLE_CLAW;
     }
 }

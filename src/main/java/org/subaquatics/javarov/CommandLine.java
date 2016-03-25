@@ -141,17 +141,18 @@ public class CommandLine implements Runnable
 			}
 		));
 
-		Pattern stepperPinsPattern = Pattern.compile("(\\d+)\\s+(\\d+)");
+		Pattern stepperPinsPattern = Pattern.compile("(\\d+)\\s+(\\d+)\\s+(\\d+)");
 		addCommand(new Command(
 			"configure-stepperpins",
-			"<direction-pin> <step-pin>",
+			"<direction-pin> <step-pin> <enable-pin>",
 			"Configure the stepper to use the specified pins.",
 			(arg) -> {
 				Matcher m = stepperPinsPattern.matcher(arg);
 				if(m.matches()) {
 					int directionPin = Integer.parseInt(m.group(1));
 					int stepPin = Integer.parseInt(m.group(2));
-					bot.configureStepperPins(directionPin, stepPin);
+					int enablePin = Integer.parseInt(m.group(3));
+					bot.configureStepperPins(directionPin, stepPin, enablePin);
 					return true;
 				}
 				return false;
@@ -204,6 +205,22 @@ public class CommandLine implements Runnable
 						new Thread(new JoystickHandler(bot, controllers[controller], m.group(2))).start();
 						System.out.println("Starting controller listening thread.");
 					}
+					return true;
+				}
+				return false;
+			}
+		));
+
+		Pattern setStepperStatePattern = Pattern.compile("(\\d+)");
+		addCommand(new Command(
+			"configure-stepperstate",
+			"<enabled>",
+			"Enable the stepper motor.",
+			(arg) -> {
+				Matcher m = setStepperStatePattern.matcher(arg);
+				if(m.matches()) {
+					int enable = Integer.parseInt(m.group(1));
+					bot.setStepperState(enable==1);
 					return true;
 				}
 				return false;

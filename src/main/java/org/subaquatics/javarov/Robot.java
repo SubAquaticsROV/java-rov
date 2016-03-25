@@ -15,7 +15,7 @@ public class Robot implements IRobot
 	}
 	
 	@Override
-	public void configureMotorPWMBounds(int min, int max)
+	public synchronized void configureMotorPWMBounds(int min, int max)
 	{
 		try
 		{
@@ -30,7 +30,7 @@ public class Robot implements IRobot
 	}
 
 	@Override
-	public void configureMotorPins(int motorId, int pwmPin, int aPin, int bPin)
+	public synchronized void configureMotorPins(int motorId, int pwmPin, int aPin, int bPin)
 	{
 		try
 		{
@@ -46,7 +46,7 @@ public class Robot implements IRobot
 	}
 
 	@Override
-	public void controlMotor(int motorId, int flags, int pwm)
+	public synchronized void controlMotor(int motorId, int flags, int pwm)
 	{
 		try
 		{
@@ -60,17 +60,18 @@ public class Robot implements IRobot
 		}
 	}
 
-	public void configureStepperPins(int directionPin, int stepPin) {
+	public synchronized void configureStepperPins(int directionPin, int stepPin, int enablePin) {
 		try {
 			out.write(0x20);
 			out.write(directionPin & 0xFF);
 			out.write(stepPin & 0xFF);
+			out.write(enablePin & 0xFF);
 		} catch(IOException e) {
 			System.out.println("Error writing to robot.");
 		}
 	}
 
-	public void controlStepper(boolean direction) {
+	public synchronized void controlStepper(boolean direction) {
 		try {
 			out.write(0x21);
 			out.write((direction ? 0 : 1)<<4);
@@ -79,8 +80,17 @@ public class Robot implements IRobot
 		}
 	}
 
+	public synchronized void setStepperState(boolean enabled) {
+		try {
+			out.write(0x22);
+			out.write(enabled ? 0 : 1);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
 	@Override
-	public void echo(int byteInt)
+	public synchronized void echo(int byteInt)
 	{
 		try
 		{
@@ -94,7 +104,7 @@ public class Robot implements IRobot
 	}
 
 	@Override
-	public void version() {
+	public synchronized void version() {
 		try {
 			out.write(0xF1);
 		} catch(IOException e) {
