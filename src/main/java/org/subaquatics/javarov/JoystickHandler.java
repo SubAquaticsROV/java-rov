@@ -31,6 +31,8 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
     int upwardSpeed;
     boolean strafeLeft;
     boolean strafeRight;
+    boolean openClaw;
+    boolean closeClaw;
 
 	public JoystickHandler(IRobot robot, Controller controller, String mappingFile) {
 		this.robot = robot;
@@ -86,6 +88,12 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                         break;
                     case STRAFE_RIGHT:
                         strafeRight = event.getValue()>=0.5;
+                        break;
+                    case OPEN_CLAW:
+                        openClaw = event.getValue()>=0.5;
+                        break;
+                    case CLOSE_CLAW:
+                        closeClaw = event.getValue()>=0.5;
 						break;
 				}
 			}
@@ -136,6 +144,18 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                 robot.controlMotor(8, 0, 0);
             }
 
+            if (openClaw && !closeClaw) {
+                robot.controlStepper(true);
+                robot.controlStepper(true);
+                robot.controlStepper(true);
+                robot.controlStepper(true);
+            } else if(closeClaw && !openClaw) {
+                robot.controlStepper(false);
+                robot.controlStepper(false);
+                robot.controlStepper(false);
+                robot.controlStepper(false);
+            }
+
             // !!!!! END OF CONTROLLING LOGIC !!!!!
 
 			try {
@@ -151,6 +171,8 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
         TURN,
         ELEVATE,
         STRAFE_LEFT,
-        STRAFE_RIGHT;
+        STRAFE_RIGHT,
+        OPEN_CLAW,
+        CLOSE_CLAW;
     }
 }

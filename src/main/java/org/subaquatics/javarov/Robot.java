@@ -73,7 +73,7 @@ public class Robot implements IRobot
 	public void controlStepper(boolean direction) {
 		try {
 			out.write(0x21);
-			out.write(direction ? 0 : 1);
+			out.write((direction ? 0 : 1)<<4);
 		} catch(IOException e) {
 			System.out.println("Error writing to robot.");
 		}
