@@ -40,7 +40,7 @@ public class CommandLine implements Runnable
 			String commandString = args[0];
 			String arg = "";
 			if (args.length >= 2) {
-				arg = args[1];
+				arg = args[1].trim();
 			}
 			
 			if(commands.containsKey(commandString)) {
