@@ -95,6 +95,9 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                         openClaw = event.getValue()>=0.5;
                         break;
                     case CLOSE_CLAW:
+                        closeClaw = event.getValue()>=0.5;
+                        break;
+                    case DISABLE_CLAW:
                         if (event.getValue()>=0.5) {
                             disableClawJustPressed = true;
                         }
