@@ -227,6 +227,61 @@ public class CommandLine implements Runnable
 			}
 		));
 
+		Pattern configureSensorStatePattern = Pattern.compile("(voltage|temperature)\\s+(on|off)");
+		addCommand(new Command(
+			"configure-sensorstate",
+			"<sensor> <on|off>",
+			"Turn a sensor on or off.",
+			(arg) -> {
+				Matcher m = configureSensorStatePattern.matcher(arg);
+				if(m.matches()) {
+					String sensor = m.group(1);
+					int sensorId = -1;
+					switch(sensor) {
+						case "voltage": sensorId = 0x31; break;
+						case "temperature": sensorId = 0x32; break;
+					}
+					String onOff = m.group(2);
+					int state = onOff.equals("on") ? 0x1: 0x0;
+					bot.setSensorState(sensorId, state);
+					return true;
+				}
+				return false;
+			}
+		));
+
+		Pattern configureVoltageSensorPinPattern = Pattern.compile("(\\d+)");
+		addCommand(new Command(
+			"configure-voltagesensorpin",
+			"<pin>",
+			"Configure the voltage sensor.",
+			(arg) -> {
+				Matcher m = configureVoltageSensorPinPattern.matcher(arg);
+				if(m.matches()) {
+					int pin = Integer.parseInt(m.group(1));
+					bot.setVoltageSensorPin(pin);
+					return true;
+				}
+				return false;
+			}
+		));
+
+		Pattern configureTemperatureSensorPinPattern = Pattern.compile("(\\d+)");
+		addCommand(new Command(
+			"configure-temperaturesensorpin",
+			"<pin>",
+			"Configure the voltage sensor.",
+			(arg) -> {
+				Matcher m = configureTemperatureSensorPinPattern.matcher(arg);
+				if(m.matches()) {
+					int pin = Integer.parseInt(m.group(1));
+					bot.setTemperatureSensorPin(pin);
+					return true;
+				}
+				return false;
+			}
+		));
+
 		addCommand(new Command(
 			"get-version",
 			"",

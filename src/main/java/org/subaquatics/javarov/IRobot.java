@@ -12,6 +12,10 @@ public interface IRobot
 	public void controlStepper(boolean direction);
 	public void setStepperState(boolean enabled);
 
+	public void setSensorState(int sensor, int state);
+	public void setVoltageSensorPin(int pin);
+	public void setTemperatureSensorPin(int pin);
+
 	public void echo(int byteInt);
 	public void version();
 	

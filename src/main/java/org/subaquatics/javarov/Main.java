@@ -51,8 +51,8 @@ public class Main {
                 //Create new threads
                 //This allows full-duplex (two-way) communication
                 //The in and out streams are passed in
-				(new Thread(new RovReader(in))).start();
 				(new Thread(new CommandLine(out))).start();
+				new RovReader(in);
 			}
 			else //If it is not a serial port, say so
 			{

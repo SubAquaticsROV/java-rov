@@ -89,6 +89,38 @@ public class Robot implements IRobot
 		}
 	}
 
+
+	// !!!!! SENSORS !!!!!
+
+	public void setSensorState(int sensor, int state) {
+		try {
+			out.write(0x30);
+			out.write(sensor);
+			out.write(state);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
+	public void setVoltageSensorPin(int pin) {
+		try {
+			out.write(0x31);
+			out.write(pin);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
+	public void setTemperatureSensorPin(int pin) {
+		try {
+			out.write(0x32);
+			out.write(pin);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
+
 	@Override
 	public synchronized void echo(int byteInt)
 	{

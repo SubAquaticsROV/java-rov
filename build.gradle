@@ -10,6 +10,7 @@ mainClassName='org.subaquatics.javarov.Main'
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 def jInputVersion = '2.0.6'
@@ -20,6 +21,7 @@ dependencies {
 	compile group: 'de.root1', name:'rxtx-rebundled', version:'2.1-7r2-6'
 	compile group: 'net.java.jinput', name:'jinput-platform', version:'2.0.6'
 	compile group: 'net.java.jinput', name:'jinput', version:'2.0.6'
+	compile 'com.github.SINTEF-9012:rtcharts:bd26db7'
 	runtime files("$buildDir/natives/windows/")
 }
 
