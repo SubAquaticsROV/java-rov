@@ -3,67 +3,55 @@ package org.subaquatics.javarov;
 import java.io.InputStream;
 import java.io.IOException;
 
-import org.thingml.rtcharts.swing.GraphBuffer;
-import org.thingml.rtcharts.swing.LineGraphPanel;
-import javax.swing.*;
-import java.awt.*;
-
-public class RovReader extends JFrame implements Runnable {
+public class RovReader implements Runnable {
 	private InputStream in;
-	private JTextArea log = new JTextArea(50, 80);
-	private GraphBuffer voltageGraphBuffer = new GraphBuffer(1500);
-	private LineGraphPanel voltageGraphPanel = new LineGraphPanel(voltageGraphBuffer, "Voltage", 0, 1024, 32, 1000, Color.GREEN);
-	private GraphBuffer temperatureGraphBuffer = new GraphBuffer(1500);
-	private LineGraphPanel temperatureGraphPanel = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 1024, 32, 1000, Color.RED);
+	private LogListener logListener;
+	private VoltageListener voltageListener;
+	private TemperatureListener temperatureListener;
     
     //Constructor
 	public RovReader(InputStream in) {
 		this.in = in;
-		log.setEditable(false);
-		JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT, voltageGraphPanel, temperatureGraphPanel);
-		JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(log), right);
-		this.add(pane);
-		this.setSize(400, 300);
-
-		this.setVisible(true);
-		new Thread(this).start();
-		voltageGraphPanel.start();
-		temperatureGraphPanel.start();
+		this.logListener = (message) -> {
+			System.out.println(message);
+		};
+		this.voltageListener = (voltage) -> {
+			System.out.println("[Voltage]"+voltage);
+		};
+		this.temperatureListener = (voltage) -> {
+			System.out.println("[Temperature]"+voltage);
+		};
 	}
     
 	public void run() {
 		byte[] buffer = new byte[1024];
 		int len = -1;
 		try {
-			while(this.isVisible()) {
+			while(true) {
 				int responseType = this.in.read();
 				switch(responseType) {
 					case 0x10:
-						log.append("[Error]"+logMessage()+"\n");
+						logListener.update("[Error]"+logMessage());
 						break;
 					case 0x11:
-						log.append("[Warning]"+logMessage()+"\n");
+						logListener.update("[Warning]"+logMessage());
 						break;
 					case 0x12:
-						log.append("[Info]"+logMessage()+"\n");
+						logListener.update("[Info]"+logMessage());
 						break;
 					case 0x13:
-						log.append("[Debug]"+logMessage()+"\n");
+						logListener.update("[Debug]"+logMessage());
 						break;
 					case 0x20: // Voltage
-						int intValue = readInt();
-						voltageGraphBuffer.insertData(intValue);
+						voltageListener.update(readInt());
 						break;
 					case 0x21: // Temperature
-						int temperatureValue = readInt();
-						temperatureGraphBuffer.insertData(temperatureValue);
+						temperatureListener.update(readInt());
 						break;
 				}
 			}
 		} catch( IOException e ) {
 			e.printStackTrace();
-		} finally {
-			voltageGraphPanel.stop();
 		}
 	}
 
@@ -82,5 +70,29 @@ public class RovReader extends JFrame implements Runnable {
 		int[] buffer = new int[4];
 		for (int i=0; i<buffer.length; i++) buffer[i] = this.in.read();
 		return ((buffer[0] & 0xFF) << 24) | ((buffer[1] & 0xFF) << 16) | ((buffer[2] & 0xFF) << 8) | (buffer[3] & 0xFF);
+	}
+
+	public void setLogListener(LogListener logListener) {
+		this.logListener = logListener;
+	}
+
+	public void setVoltageListener(VoltageListener voltageListener) {
+		this.voltageListener = voltageListener;
+	}
+
+	public void setTemperatureListener(TemperatureListener temperatureListener) {
+		this.temperatureListener = temperatureListener;
+	}
+
+	public static interface VoltageListener {
+		public void update(int voltage);
+	}
+
+	public static interface TemperatureListener {
+		public void update(int temperature);
+	}
+
+	public static interface LogListener {
+		public void update(String message);
 	}
 }

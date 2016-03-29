@@ -52,7 +52,13 @@ public class Main {
                 //This allows full-duplex (two-way) communication
                 //The in and out streams are passed in
 				(new Thread(new CommandLine(out))).start();
-				new RovReader(in);
+				RovReader reader = new RovReader(in);
+				SwingUserInterface sui = new SwingUserInterface();
+				reader.setLogListener(sui.getLogListener());
+				reader.setVoltageListener(sui.getVoltageListener());
+				reader.setTemperatureListener(sui.getTemperatureListener());
+				new Thread(reader).start();
+				sui.setVisible(true);
 			}
 			else //If it is not a serial port, say so
 			{

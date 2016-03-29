@@ -13,8 +13,7 @@ import net.java.games.input.ControllerEnvironment;
 //Inner class declaration
 //Uses the runnable interface to allow for multi-threading
 //Multi-threading = running multiple things simultaneously
-public class CommandLine implements Runnable
-{
+public class CommandLine implements Runnable {
 
 	private HashMap<String, Command> commands;
 	private OutputStream out;
