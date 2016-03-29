@@ -28,11 +28,9 @@ public class SwingUserInterface extends JFrame {
 		DefaultCaret caret = (DefaultCaret)log.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
-		panel.add(log, "spany 2");
+		panel.add(new JScrollPane(log), "spany 2");
 		panel.add(graphOne, "wrap");
 		panel.add(graphTwo);
-		//JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT, voltageGraphPanel, temperatureGraphPanel);
-		//JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(log), right);
 		
 		this.add(panel);
 		this.setSize(400, 300);
