@@ -24,8 +24,6 @@ public class RovReader implements Runnable {
 	}
     
 	public void run() {
-		byte[] buffer = new byte[1024];
-		int len = -1;
 		try {
 			while(true) {
 				int responseType = this.in.read();
