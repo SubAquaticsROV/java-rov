@@ -6,6 +6,9 @@ import org.thingml.rtcharts.swing.LineGraphPanel;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -21,6 +24,8 @@ public class SwingUserInterface extends JFrame {
 	private LineGraphPanel graphOne = new LineGraphPanel(voltageGraphBuffer, "Voltage", 0, 1024, 32, 1000, Color.GREEN);
 	private LineGraphPanel graphTwo = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 1024, 32, 1000, Color.RED);
 
+	private ArrayList<QuitListener> quitters = new ArrayList<>();
+
 	public SwingUserInterface() {
 		JPanel panel = new JPanel(new MigLayout());
 
@@ -31,9 +36,14 @@ public class SwingUserInterface extends JFrame {
 		panel.add(new JScrollPane(log), "spany 2");
 		panel.add(graphOne, "wrap");
 		panel.add(graphTwo);
-		
+
 		this.add(panel);
 		this.setSize(400, 300);
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				onQuit();
+			}
+		});
 
 		graphOne.start();
 		graphTwo.start();
@@ -61,6 +71,17 @@ public class SwingUserInterface extends JFrame {
 				log.append(message+"\n");
 			}
 		};
+	}
+
+	public void addQuitListener(QuitListener quitter) {
+		quitters.add(quitter);
+	}
+
+	private void onQuit() {
+		for (QuitListener quitter: quitters) {
+			quitter.quit();
+		}
+		System.exit(0);
 	}
 
 }

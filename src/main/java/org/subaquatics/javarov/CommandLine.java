@@ -13,11 +13,12 @@ import net.java.games.input.ControllerEnvironment;
 //Inner class declaration
 //Uses the runnable interface to allow for multi-threading
 //Multi-threading = running multiple things simultaneously
-public class CommandLine implements Runnable {
+public class CommandLine implements Runnable, QuitListener {
 
 	private HashMap<String, Command> commands;
 	private OutputStream out;
 	private IRobot bot;
+	private boolean running;
 
     //Constructor
 	public CommandLine(OutputStream out) {
@@ -34,7 +35,9 @@ public class CommandLine implements Runnable {
 	public void run() {
 		Scanner input = new Scanner(System.in);
 		Pattern commandPattern = Pattern.compile("\\s+");
-		while( true ) {
+		running = true;
+		while( running ) {
+			System.out.println("CommandLine running: "+running);
 			String[] args = commandPattern.split(input.nextLine(), 2);
 			String commandString = args[0];
 			String arg = "";
@@ -51,6 +54,11 @@ public class CommandLine implements Runnable {
 				System.out.println("Unknown command. Type 'help' for help.");
 			}
 		}
+	}
+
+	@Override
+	public void quit() {
+		running = false;
 	}
 
 	private void initCommands() {

@@ -19,8 +19,6 @@ import net.java.games.input.Controller;
 
 public class Main {
 
-	public static boolean running;
-
 	public void connect(String portName) throws Exception {
 	    //Calling RXTX library to get the port the arduino is on - assumed to be
 	    //"COM3" in this instance
@@ -45,19 +43,23 @@ public class Main {
 				//Create an output stream (similar to System.out) that connects to serialPort
 				OutputStream out = serialPort.getOutputStream();
 
-				running = true;
-
                 
                 //Create new threads
                 //This allows full-duplex (two-way) communication
                 //The in and out streams are passed in
-				(new Thread(new CommandLine(out))).start();
+				CommandLine cli = new CommandLine(out);
 				RovReader reader = new RovReader(in);
 				SwingUserInterface sui = new SwingUserInterface();
+				
 				reader.setLogListener(sui.getLogListener());
 				reader.setVoltageListener(sui.getVoltageListener());
 				reader.setTemperatureListener(sui.getTemperatureListener());
+
+				sui.addQuitListener(reader);
+				sui.addQuitListener(cli);
+
 				new Thread(reader).start();
+				new Thread(cli).start();
 				sui.setVisible(true);
 			}
 			else //If it is not a serial port, say so

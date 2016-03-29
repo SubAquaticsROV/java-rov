@@ -3,11 +3,12 @@ package org.subaquatics.javarov;
 import java.io.InputStream;
 import java.io.IOException;
 
-public class RovReader implements Runnable {
+public class RovReader implements Runnable, QuitListener {
 	private InputStream in;
 	private LogListener logListener;
 	private VoltageListener voltageListener;
 	private TemperatureListener temperatureListener;
+	private boolean running;
     
     //Constructor
 	public RovReader(InputStream in) {
@@ -24,8 +25,10 @@ public class RovReader implements Runnable {
 	}
     
 	public void run() {
+		running = true;
 		try {
-			while(true) {
+			while(running) {
+				System.out.println("RovReader running: "+running);
 				int responseType = this.in.read();
 				switch(responseType) {
 					case 0x10:
@@ -68,6 +71,11 @@ public class RovReader implements Runnable {
 		int[] buffer = new int[4];
 		for (int i=0; i<buffer.length; i++) buffer[i] = this.in.read();
 		return ((buffer[0] & 0xFF) << 24) | ((buffer[1] & 0xFF) << 16) | ((buffer[2] & 0xFF) << 8) | (buffer[3] & 0xFF);
+	}
+
+	@Override
+	public void quit() {
+		running = false;
 	}
 
 	public void setLogListener(LogListener logListener) {
