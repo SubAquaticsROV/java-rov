@@ -51,15 +51,20 @@ public class Main {
 				RovReader reader = new RovReader(in);
 				SwingUserInterface sui = new SwingUserInterface();
 				
+				cli.setLogListener(sui.getLogListener());
+
 				reader.setLogListener(sui.getLogListener());
 				reader.setVoltageListener(sui.getVoltageListener());
 				reader.setTemperatureListener(sui.getTemperatureListener());
 
 				sui.addQuitListener(reader);
 				sui.addQuitListener(cli);
+				sui.setExecutor((command) -> {
+					cli.executeCommand(command);
+				});
 
 				new Thread(reader).start();
-				new Thread(cli).start();
+				//new Thread(cli).start();
 				sui.setVisible(true);
 			}
 			else //If it is not a serial port, say so

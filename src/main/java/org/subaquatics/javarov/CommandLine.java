@@ -18,13 +18,18 @@ public class CommandLine implements Runnable, QuitListener {
 	private HashMap<String, Command> commands;
 	private OutputStream out;
 	private IRobot bot;
+	private LogListener logListener;
 	private boolean running;
+	private Pattern commandPattern = Pattern.compile("\\s+");
 
     //Constructor
 	public CommandLine(OutputStream out) {
 		commands = new HashMap<>();
 		this.out = out;
 		this.bot = new Robot(this.out);
+		this.logListener = (message) -> {
+			System.out.println(message);
+		};
 		initCommands();
 	}
 
@@ -32,26 +37,33 @@ public class CommandLine implements Runnable, QuitListener {
 		this.commands.put(command.getName(), command);
 	}
 
+	public void setLogListener(LogListener listener) {
+		this.logListener = listener;
+	}
+
 	public void run() {
 		Scanner input = new Scanner(System.in);
-		Pattern commandPattern = Pattern.compile("\\s+");
 		running = true;
 		while( running ) {
-			String[] args = commandPattern.split(input.nextLine(), 2);
-			String commandString = args[0];
-			String arg = "";
-			if (args.length >= 2) {
-				arg = args[1].trim();
+			executeCommand(input.nextLine());
+		}
+	}
+
+	public void executeCommand(String text) {
+		String[] args = commandPattern.split(text, 2);
+		String commandString = args[0];
+		String arg = "";
+		if (args.length >= 2) {
+			arg = args[1].trim();
+		}
+		
+		if(commands.containsKey(commandString)) {
+			Command command = commands.get(commandString);
+			if(!command.execute(arg)) {
+				logListener.update("Correct usage: "+command.getName()+"\t"+command.getParameters());
 			}
-			
-			if(commands.containsKey(commandString)) {
-				Command command = commands.get(commandString);
-				if(!command.execute(arg)) {
-					System.out.println("Correct usage: "+command.getName()+"\t"+command.getParameters());
-				}
-			} else {
-				System.out.println("Unknown command. Type 'help' for help.");
-			}
+		} else {
+			logListener.update("Unknown command. Type 'help' for help.");
 		}
 	}
 
@@ -68,12 +80,12 @@ public class CommandLine implements Runnable, QuitListener {
 			(arg) -> {
 				if (arg==null || arg.equals("")) {
 					for (Command command: commands.values()) {
-						System.out.println(command.getName()+"\t"+command.getDescription());
+						logListener.update(command.getName()+"\t"+command.getDescription());
 					}
 				} else if(commands.containsKey(arg)) {
 					Command command = commands.get(arg);
-					System.out.println(command.getName()+"\t"+command.getParameters());
-					System.out.println(command.getDescription());
+					logListener.update(command.getName()+"\t"+command.getParameters());
+					logListener.update(command.getDescription());
 				} else {
 					// TODO: Do regex on name and description...
 				}
@@ -188,7 +200,7 @@ public class CommandLine implements Runnable, QuitListener {
 			(arg) -> {
 				Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
 				for(int i=0; i<controllers.length; i++) {
-					System.out.println(i + ": " + controllers[i].getName() + ", " + controllers[i].getType());
+					logListener.update(i + ": " + controllers[i].getName() + ", " + controllers[i].getType());
 				}
 				return true;
 			}
@@ -205,11 +217,11 @@ public class CommandLine implements Runnable, QuitListener {
 					int controller = Integer.parseInt(m.group(1));
 					Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
 					if(controller > controllers.length || controller < 0) {
-						System.out.println("Invalid controller number \""+controller+"\".");
-						System.out.println("List available controllers with \"show-controllers\".");
+						logListener.update("Invalid controller number \""+controller+"\".");
+						logListener.update("List available controllers with \"show-controllers\".");
 					} else {
 						new Thread(new JoystickHandler(bot, controllers[controller], m.group(2))).start();
-						System.out.println("Starting controller listening thread.");
+						logListener.update("Starting controller listening thread.");
 					}
 					return true;
 				}

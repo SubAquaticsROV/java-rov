@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.subaquatics.javarov.RovReader.LogListener;
 import org.subaquatics.javarov.RovReader.VoltageListener;
 import org.subaquatics.javarov.RovReader.TemperatureListener;
 
@@ -27,6 +26,7 @@ public class SwingUserInterface extends JFrame {
 	private LineGraphPanel graphTwo = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 1024, 32, 1000, Color.RED);
 
 	private ArrayList<QuitListener> quitters = new ArrayList<>();
+	private ExecuteComand executor;
 
 	public SwingUserInterface() {
 		JPanel panel = new JPanel(new MigLayout());
@@ -37,8 +37,13 @@ public class SwingUserInterface extends JFrame {
 		DefaultCaret caret = (DefaultCaret)log.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
+		executor = (text) -> {
+			log.append(text + "\n");
+		};
+
 		exectueButton.addActionListener((e) -> {
-			log.append(commandField.getText() + "\n");
+			executor.execute(commandField.getText());
+			commandField.setText("");
 		});
 
 		cliPanel.add(new JScrollPane(log), "spanx 2, wrap");
@@ -85,6 +90,10 @@ public class SwingUserInterface extends JFrame {
 		};
 	}
 
+	public void setExecutor(ExecuteComand e) {
+		executor = e;
+	}
+
 	public void addQuitListener(QuitListener quitter) {
 		quitters.add(quitter);
 	}
@@ -94,6 +103,10 @@ public class SwingUserInterface extends JFrame {
 			quitter.quit();
 		}
 		System.exit(0);
+	}
+
+	public static interface ExecuteComand {
+		public void execute(String text);
 	}
 
 }

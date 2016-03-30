@@ -99,8 +99,4 @@ public class RovReader implements Runnable, QuitListener {
 	public static interface TemperatureListener {
 		public void update(int temperature);
 	}
-
-	public static interface LogListener {
-		public void update(String message);
-	}
 }
