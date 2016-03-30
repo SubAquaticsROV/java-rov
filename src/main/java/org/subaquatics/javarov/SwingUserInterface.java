@@ -19,7 +19,7 @@ public class SwingUserInterface extends JFrame {
 
 	private JTextArea log = new JTextArea(50, 80);
 	private JTextField commandField = new JTextField(72);
-	private JButton exectueButton = new JButton("Execute");
+	private JButton executeButton = new JButton("Execute");
 	private GraphBuffer voltageGraphBuffer = new GraphBuffer(1500);
 	private GraphBuffer temperatureGraphBuffer = new GraphBuffer(1500);
 	private LineGraphPanel graphOne = new LineGraphPanel(voltageGraphBuffer, "Voltage", 0, 1024, 32, 1000, Color.GREEN);
@@ -41,14 +41,19 @@ public class SwingUserInterface extends JFrame {
 			log.append(text + "\n");
 		};
 
-		exectueButton.addActionListener((e) -> {
+		executeButton.addActionListener((e) -> {
+			executor.execute(commandField.getText());
+			commandField.setText("");
+		});
+
+		commandField.addActionListener((e) -> {
 			executor.execute(commandField.getText());
 			commandField.setText("");
 		});
 
 		cliPanel.add(new JScrollPane(log), "spanx 2, wrap");
 		cliPanel.add(commandField, "grow");
-		cliPanel.add(exectueButton);
+		cliPanel.add(executeButton);
 
 		panel.add(cliPanel, "spany 2");
 		panel.add(graphOne, "wrap");
