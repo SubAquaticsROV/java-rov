@@ -19,6 +19,8 @@ import org.subaquatics.javarov.RovReader.TemperatureListener;
 public class SwingUserInterface extends JFrame {
 
 	private JTextArea log = new JTextArea(50, 80);
+	private JTextField commandField = new JTextField(72);
+	private JButton exectueButton = new JButton("Execute");
 	private GraphBuffer voltageGraphBuffer = new GraphBuffer(1500);
 	private GraphBuffer temperatureGraphBuffer = new GraphBuffer(1500);
 	private LineGraphPanel graphOne = new LineGraphPanel(voltageGraphBuffer, "Voltage", 0, 1024, 32, 1000, Color.GREEN);
@@ -29,11 +31,21 @@ public class SwingUserInterface extends JFrame {
 	public SwingUserInterface() {
 		JPanel panel = new JPanel(new MigLayout());
 
+		JPanel cliPanel = new JPanel(new MigLayout());
+
 		log.setEditable(false);
 		DefaultCaret caret = (DefaultCaret)log.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		
-		panel.add(new JScrollPane(log), "spany 2");
+
+		exectueButton.addActionListener((e) -> {
+			log.append(commandField.getText() + "\n");
+		});
+
+		cliPanel.add(new JScrollPane(log), "spanx 2, wrap");
+		cliPanel.add(commandField, "grow");
+		cliPanel.add(exectueButton);
+
+		panel.add(cliPanel, "spany 2");
 		panel.add(graphOne, "wrap");
 		panel.add(graphTwo);
 
