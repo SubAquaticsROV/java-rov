@@ -3,19 +3,22 @@ package org.subaquatics.javarov;
 
 public interface IRobot
 {
-	
+	// Motors
 	public void configureMotorPWMBounds(int min, int max);
 	public void configureMotorPins(int motorId, int pwmPin, int aPin, int bPin);
 	public void controlMotor(int motorId, int flags, int pwm);
 
+	// Stepper
 	public void configureStepperPins(int directionPin, int stepPin, int enablePin);
 	public void controlStepper(boolean direction);
 	public void setStepperState(boolean enabled);
 
+	// Sensors
 	public void setSensorState(int sensor, int state);
 	public void setVoltageSensorPin(int pin);
 	public void setTemperatureSensorPin(int pin);
 
+	// Misc
 	public void echo(int byteInt);
 	public void version();
 	

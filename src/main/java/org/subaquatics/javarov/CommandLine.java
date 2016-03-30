@@ -37,7 +37,6 @@ public class CommandLine implements Runnable, QuitListener {
 		Pattern commandPattern = Pattern.compile("\\s+");
 		running = true;
 		while( running ) {
-			System.out.println("CommandLine running: "+running);
 			String[] args = commandPattern.split(input.nextLine(), 2);
 			String commandString = args[0];
 			String arg = "";

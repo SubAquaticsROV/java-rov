@@ -28,7 +28,6 @@ public class RovReader implements Runnable, QuitListener {
 		running = true;
 		try {
 			while(running) {
-				System.out.println("RovReader running: "+running);
 				int responseType = this.in.read();
 				switch(responseType) {
 					case 0x10:
@@ -48,6 +47,9 @@ public class RovReader implements Runnable, QuitListener {
 						break;
 					case 0x21: // Temperature
 						temperatureListener.update(readInt());
+						break;
+					default:
+						logListener.update("Received unknown type of response: "+responseType);
 						break;
 				}
 			}
