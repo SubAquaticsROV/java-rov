@@ -233,6 +233,8 @@ public class CommandLine implements Runnable, QuitListener {
 			}
 		));
 
+		// Sensors
+
 		Pattern configureSensorStatePattern = Pattern.compile("(voltage|temperature)\\s+(on|off)");
 		addCommand(new Command(
 			"configure-sensorstate",
@@ -282,6 +284,48 @@ public class CommandLine implements Runnable, QuitListener {
 				if(m.matches()) {
 					int pin = Integer.parseInt(m.group(1));
 					bot.setTemperatureSensorPin(pin);
+					return true;
+				}
+				return false;
+			}
+		));
+
+		Pattern configureCameraPinsPattern = Pattern.compile("(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
+		addCommand(new Command(
+			"configure-camerapins",
+			"<mux1-1> <mux1-2> <mux1-3> <mux1-4> <mux2-1> <mux2-2> <mux2-3> <mux2-4>",
+			"Configure the camera multiplexer pins.",
+			(arg) -> {
+				Matcher m = configureCameraPinsPattern.matcher(arg);
+				if (m.matches()) {
+					int[] pins = {
+						Integer.parseInt(m.group(1)),
+						Integer.parseInt(m.group(2)),
+						Integer.parseInt(m.group(3)),
+						Integer.parseInt(m.group(4)),
+						Integer.parseInt(m.group(5)),
+						Integer.parseInt(m.group(6)),
+						Integer.parseInt(m.group(7)),
+						Integer.parseInt(m.group(8)),
+					};
+					bot.setCameraPins(pins[0],pins[1],pins[2],pins[3],pins[4],pins[5],pins[6],pins[7]);
+					return true;
+				}
+				return false;
+			}
+		));
+
+		Pattern switchCameraPattern = Pattern.compile("(a|b)\\s+(\\d+)");
+		addCommand(new Command(
+			"switch-camera",
+			"<a|b> <camera>",
+			"Switch the camera.",
+			(arg) -> {
+				Matcher m = switchCameraPattern.matcher(arg);
+				if (m.matches()) {
+					boolean multiplexer = m.group(1).equals("a");
+					int camera = Integer.parseInt(m.group(2));
+					bot.switchCamera(multiplexer, camera);
 					return true;
 				}
 				return false;

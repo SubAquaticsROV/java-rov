@@ -18,6 +18,10 @@ public interface IRobot
 	public void setVoltageSensorPin(int pin);
 	public void setTemperatureSensorPin(int pin);
 
+	// Cameras
+	public void setCameraPins(int pa, int re, int ci, int vo, int mu, int xa, int ze, int bi);
+	public void switchCamera(boolean multiplexer, int camera);
+
 	// Misc
 	public void echo(int byteInt);
 	public void version();

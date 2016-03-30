@@ -14,6 +14,7 @@ public class Robot implements IRobot
 		this.out = out;
 	}
 	
+	// MOTORS
 	@Override
 	public synchronized void configureMotorPWMBounds(int min, int max)
 	{
@@ -60,6 +61,9 @@ public class Robot implements IRobot
 		}
 	}
 
+
+	// STEPPER
+	@Override
 	public synchronized void configureStepperPins(int directionPin, int stepPin, int enablePin) {
 		try {
 			out.write(0x20);
@@ -71,6 +75,7 @@ public class Robot implements IRobot
 		}
 	}
 
+	@Override
 	public synchronized void controlStepper(boolean direction) {
 		try {
 			out.write(0x21);
@@ -80,6 +85,7 @@ public class Robot implements IRobot
 		}
 	}
 
+	@Override
 	public synchronized void setStepperState(boolean enabled) {
 		try {
 			out.write(0x22);
@@ -91,8 +97,8 @@ public class Robot implements IRobot
 
 
 	// !!!!! SENSORS !!!!!
-
-	public void setSensorState(int sensor, int state) {
+	@Override
+	public synchronized void setSensorState(int sensor, int state) {
 		try {
 			out.write(0x30);
 			out.write(sensor);
@@ -102,7 +108,8 @@ public class Robot implements IRobot
 		}
 	}
 
-	public void setVoltageSensorPin(int pin) {
+	@Override
+	public synchronized void setVoltageSensorPin(int pin) {
 		try {
 			out.write(0x31);
 			out.write(pin);
@@ -111,7 +118,8 @@ public class Robot implements IRobot
 		}
 	}
 
-	public void setTemperatureSensorPin(int pin) {
+	@Override
+	public synchronized void setTemperatureSensorPin(int pin) {
 		try {
 			out.write(0x32);
 			out.write(pin);
@@ -120,6 +128,39 @@ public class Robot implements IRobot
 		}
 	}
 
+
+	// !!!!! CAMERAS !!!!!
+	@Override
+	public synchronized void setCameraPins(int pa, int re, int ci, int vo, int mu, int xa, int ze, int bi) {
+		try {
+			out.write(0x40);
+			out.write(pa);
+			out.write(re);
+			out.write(ci);
+			out.write(vo);
+			out.write(mu);
+			out.write(xa);
+			out.write(ze);
+			out.write(bi);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
+	@Override
+	public synchronized void switchCamera(boolean multiplexer, int camera) {
+		try {
+			out.write(0x41);
+			int flags = 0;
+			flags |= multiplexer ? 1 : 0;
+			out.write(((flags & 0xF)<<4) | (camera & 0xF));
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
+
+	// !!!!! MISC !!!!!
 
 	@Override
 	public synchronized void echo(int byteInt)
