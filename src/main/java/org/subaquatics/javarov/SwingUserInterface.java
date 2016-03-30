@@ -20,6 +20,9 @@ public class SwingUserInterface extends JFrame {
 	private JTextArea log = new JTextArea(50, 80);
 	private JTextField commandField = new JTextField(72);
 	private JButton executeButton = new JButton("Execute");
+	private JTextArea script = new JTextArea(30, 40);
+	private JButton scriptButton = new JButton("Script");
+	private JButton executeScriptButton = new JButton("Execute Script");
 	private GraphBuffer voltageGraphBuffer = new GraphBuffer(1500);
 	private GraphBuffer temperatureGraphBuffer = new GraphBuffer(1500);
 	private LineGraphPanel graphOne = new LineGraphPanel(voltageGraphBuffer, "Voltage", 0, 1024, 32, 1000, Color.GREEN);
@@ -51,9 +54,31 @@ public class SwingUserInterface extends JFrame {
 			commandField.setText("");
 		});
 
-		cliPanel.add(new JScrollPane(log), "spanx 2, wrap");
+		JDialog dialog = new JDialog();
+		JPanel dialogPanel = new JPanel(new MigLayout());
+		scriptButton.addActionListener((e) -> {
+			dialog.setVisible(true);
+		});
+		dialog.setModal(true);
+
+		executeScriptButton.addActionListener((e) -> {
+			String[] scriptLines = script.getText().split("\n");
+			for (String line: scriptLines) {
+				executor.execute(line);
+			}
+			script.setText("");
+			dialog.setVisible(false);
+		});
+
+		dialogPanel.add(new JScrollPane(script), "wrap");
+		dialogPanel.add(executeScriptButton);
+		dialog.add(dialogPanel);
+		dialog.pack();
+
+		cliPanel.add(new JScrollPane(log), "spanx 3, wrap");
 		cliPanel.add(commandField, "grow");
 		cliPanel.add(executeButton);
+		cliPanel.add(scriptButton);
 
 		panel.add(cliPanel, "spany 2");
 		panel.add(graphOne, "wrap");
