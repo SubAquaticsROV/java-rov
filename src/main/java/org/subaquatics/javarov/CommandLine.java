@@ -177,16 +177,17 @@ public class CommandLine implements Runnable, QuitListener {
 			}
 		));
 
-		Pattern controlStepperPattern = Pattern.compile("(\\d+)");
+		Pattern controlStepperPattern = Pattern.compile("(left|right)\\s+(\\d+)");
 		addCommand(new Command(
 			"control-stepper",
-			"<direction>",
+			"<left|right> <amount>",
 			"Step the stepper",
 			(arg) -> {
 				Matcher m = controlStepperPattern.matcher(arg);
 				if(m.matches()) {
-					int direction = Integer.parseInt(m.group(1));
-					bot.controlStepper(direction==1);
+					boolean direction = m.group(1).equals("left");
+					int amount = Integer.parseInt(m.group(2));
+					bot.controlStepper(direction, amount);
 					return true;
 				}
 				return false;

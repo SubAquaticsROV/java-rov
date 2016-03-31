@@ -63,10 +63,10 @@ public class Robot implements IRobot
 	}
 
 	@Override
-	public synchronized void controlStepper(boolean direction) {
+	public synchronized void controlStepper(boolean direction, int amount) {
 		try {
 			out.write(0x21);
-			out.write((direction ? 0 : 1)<<4);
+			out.write((direction ? 0x80 : 0x00) | (amount & 0x7F));
 		} catch(IOException e) {
 			System.out.println("Error writing to robot.");
 		}

@@ -153,15 +153,9 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 
             if (!disableClaw) {
                 if (openClaw && !closeClaw) {
-                    robot.controlStepper(true);
-                    robot.controlStepper(true);
-                    robot.controlStepper(true);
-                    robot.controlStepper(true);
+                    robot.controlStepper(true,15);
                 } else if(closeClaw && !openClaw) {
-                    robot.controlStepper(false);
-                    robot.controlStepper(false);
-                    robot.controlStepper(false);
-                    robot.controlStepper(false);
+                    robot.controlStepper(false,15);
                 }
             }
 
