@@ -31,16 +31,12 @@ public class Main {
 	    //Calling RXTX library to get the port the arduino is on - assumed to be
 	    //"COM3" in this instance
 		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-		if(portIdentifier.isCurrentlyOwned()) //Makes sure com port is not being used by anything (such as the Arduino IDE)
-		{
+		if(portIdentifier.isCurrentlyOwned()) { //Makes sure com port is not being used by anything (such as the Arduino IDE)
 			System.out.println("Error: Port is currently in use");
-		}
-		else
-		{
+		} else {
 		    //Connects to the port "COM3"
 			CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
-			if (commPort instanceof SerialPort) //Makes sure it is a serial port
-			{
+			if (commPort instanceof SerialPort) { //Makes sure it is a serial port
 			    //Casting commPort from type CommPort to serialPort of type SerialPort
 				SerialPort serialPort = (SerialPort) commPort;
 				//Configure the port so it can communicate with the arduino (note the baud rate, 9600 in this case)
@@ -75,9 +71,7 @@ public class Main {
 				//new Thread(cli).start();
 				sui.setLocationRelativeTo(null);
 				sui.setVisible(true);
-			}
-			else //If it is not a serial port, say so
-			{
+			} else { //If it is not a serial port, say so
 				System.out.println("Error: Only serial ports are handled by this example.");
 			}
 		}
@@ -105,9 +99,7 @@ public class Main {
 				dialog.setVisible(false);
 				try {
 					(new Main()).connect(selectedItem);	
-				}
-				catch( Exception ex )
-				{
+				} catch( Exception ex ) {
 					ex.printStackTrace();
 				}
 			});
@@ -124,9 +116,7 @@ public class Main {
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);
 			dialog.setVisible(true);
-		}
-		catch( Exception e )
-		{
+		} catch( Exception e ) {
 			e.printStackTrace();
 		}
 	}
