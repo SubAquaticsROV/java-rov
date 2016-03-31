@@ -10,7 +10,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import java.util.Scanner;
+import java.util.ArrayList;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.JComboBox;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JDialog;
 
 import net.java.games.input.Event;
 import net.java.games.input.EventQueue;
@@ -82,10 +88,31 @@ public class Main {
 				CommPortIdentifier portIdentifier = portEnum.nextElement();
 				ports.add(portIdentifier.getName());
 			}
+
 			JDialog dialog = new JDialog();
 			JPanel panel = new JPanel(new MigLayout());
+
+			String[] a = ports.toArray(new String[ports.size()]);
+
+			JComboBox comportsBox = new JComboBox(a);
 			JButton okButton = new JButton("Ok");
-			(new Main()).connect(portIdentifier);
+			okButton.addActionListener((e) -> {
+				comportsBox.getSelectedItem();
+				String selectedItem = (String)comportsBox.getSelectedItem();
+				try {
+					(new Main()).connect(selectedItem);	
+				}
+				catch( Exception ex )
+				{
+					ex.printStackTrace();
+				}
+			});
+
+			panel.add(comportsBox, "wrap");
+			panel.add(okButton);
+			dialog.add(panel);
+
+			dialog.setVisible(true);
 		}
 		catch( Exception e )
 		{
