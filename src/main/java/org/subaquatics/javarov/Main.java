@@ -76,14 +76,15 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
+			ArrayList<String> ports = new ArrayList<>();
 			java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
 			while (portEnum.hasMoreElements() ) {
 				CommPortIdentifier portIdentifier = portEnum.nextElement();
-				System.out.println(portIdentifier.getName());
+				ports.add(portIdentifier.getName());
 			}
-			System.out.print("Tpye in COM port you would like: ");
-			Scanner input = new Scanner(System.in);
-			String portIdentifier = input.next();
+			JDialog dialog = new JDialog();
+			JPanel panel = new JPanel(new MigLayout());
+			JButton okButton = new JButton("Ok");
 			(new Main()).connect(portIdentifier);
 		}
 		catch( Exception e )
