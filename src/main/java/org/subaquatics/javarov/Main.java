@@ -16,7 +16,9 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import net.java.games.input.Event;
 import net.java.games.input.EventQueue;
@@ -71,6 +73,7 @@ public class Main {
 
 				new Thread(reader).start();
 				//new Thread(cli).start();
+				sui.setLocationRelativeTo(null);
 				sui.setVisible(true);
 			}
 			else //If it is not a serial port, say so
@@ -89,7 +92,7 @@ public class Main {
 				ports.add(portIdentifier.getName());
 			}
 
-			JDialog dialog = new JDialog();
+			JFrame dialog = new JFrame();
 			JPanel panel = new JPanel(new MigLayout());
 
 			String[] a = ports.toArray(new String[ports.size()]);
@@ -99,6 +102,7 @@ public class Main {
 			okButton.addActionListener((e) -> {
 				comportsBox.getSelectedItem();
 				String selectedItem = (String)comportsBox.getSelectedItem();
+				dialog.setVisible(false);
 				try {
 					(new Main()).connect(selectedItem);	
 				}
@@ -108,10 +112,17 @@ public class Main {
 				}
 			});
 
-			panel.add(comportsBox, "wrap");
+			panel.add(comportsBox, "grow, wrap");
 			panel.add(okButton);
 			dialog.add(panel);
 
+			dialog.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+					System.exit(0);
+				}
+			});
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);
 			dialog.setVisible(true);
 		}
 		catch( Exception e )
