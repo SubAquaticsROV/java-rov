@@ -20,6 +20,7 @@ public class CommandLine implements Runnable, QuitListener {
 	private IRobot bot;
 	private LogListener logListener;
 	private boolean running;
+	private JoystickHandler joystick;
 	private Pattern commandPattern = Pattern.compile("\\s+");
 
     //Constructor
@@ -213,6 +214,11 @@ public class CommandLine implements Runnable, QuitListener {
 			"<controller> <mapping>",
 			"Begin controlling the rov with a controller.",
 			(arg) -> {
+				if (joystick != null) {
+					logListener.update("Joystick is already running!");
+					logListener.update("Use the stop-controller command first.");
+					return true;
+				}
 				Matcher m = startControllerPattern.matcher(arg);
 				if(m.matches()) {
 					int controller = Integer.parseInt(m.group(1));
@@ -221,12 +227,28 @@ public class CommandLine implements Runnable, QuitListener {
 						logListener.update("Invalid controller number \""+controller+"\".");
 						logListener.update("List available controllers with \"show-controllers\".");
 					} else {
-						new Thread(new JoystickHandler(bot, controllers[controller], m.group(2))).start();
+						joystick = new JoystickHandler(bot, controllers[controller], m.group(2));
+						new Thread(joystick).start();
 						logListener.update("Starting controller listening thread.");
 					}
 					return true;
 				}
 				return false;
+			}
+		));
+
+		addCommand(new Command(
+			"stop-controller",
+			"",
+			"Ends the controller thread.",
+			(arg) -> {
+				if (joystick != null) {
+					joystick.stop();
+					return true;
+				} else {
+					logListener.update("There is no controller running.");
+					return true;
+				}
 			}
 		));
 

@@ -21,6 +21,7 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 	 * Allows the configuration to be mapped at runtime
 	 */
 	private HashMap<String, RobotActions> mapping;
+    private boolean running;
 
 
     /*
@@ -29,8 +30,7 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
     int forwardSpeed;
     int turningSpeed;
     int upwardSpeed;
-    boolean strafeLeft;
-    boolean strafeRight;
+    int strafe;
     boolean openClaw;
     boolean closeClaw;
     boolean disableClaw;
@@ -64,11 +64,12 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 
 	public void run()
 	{
+        running = true;
 		EventQueue queue = controller.getEventQueue();
 		Event event = new Event();
 		boolean bumper = false;
 		final float deadzone = 0.25f;
-		while(true) {
+		while(running) {
 			controller.poll();
 			while(queue.getNextEvent(event)) {
                 String name = event.getComponent().getIdentifier().getName();
@@ -86,10 +87,18 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                         upwardSpeed = (int) (event.getValue()*255);
                         break;
                     case STRAFE_LEFT:
-                        strafeLeft = event.getValue()>=0.5;
+                        if (event.getValue()>=0.1) {
+                            strafe = (int) (-event.getValue()*255);
+                        } else {
+                            strafe = 0;
+                        }
                         break;
                     case STRAFE_RIGHT:
-                        strafeRight = event.getValue()>=0.5;
+                        if (event.getValue()>=0.1) {
+                            strafe = (int) (event.getValue()*255);
+                        } else {
+                            strafe = 0;
+                        }
                         break;
                     case OPEN_CLAW:
                         openClaw = event.getValue()>=0.5;
@@ -107,7 +116,7 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 
             // !!!!! START OF CONTROLLER LOGIC !!!!!
 
-            if(!strafeLeft && !strafeRight) { // Regular driving
+            if(strafe != 0) { // Regular driving
                 if (forwardSpeed > 0) { // Move forward
                     robot.controlMotor(3, 2, forwardSpeed);
                     robot.controlMotor(4, 1, forwardSpeed);
@@ -130,7 +139,17 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                     robot.controlMotor(2, 0, 0);
                 }
             } else { // Strafing
-                ;
+                if (strafe > 0) {
+                    robot.controlMotor(1, 1, strafe);
+                    robot.controlMotor(2, 1, strafe);
+                    robot.controlMotor(3, 1, strafe);
+                    robot.controlMotor(4, 1, strafe);
+                } else {
+                    robot.controlMotor(1, 2, -strafe);
+                    robot.controlMotor(2, 2, -strafe);
+                    robot.controlMotor(3, 2, -strafe);
+                    robot.controlMotor(4, 2, -strafe);
+                }
             }
 
 
@@ -174,6 +193,10 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 			}
 		}
 	}
+
+    public void stop() {
+        running = false;
+    }
 
     private static enum RobotActions {
         FORWARD,
