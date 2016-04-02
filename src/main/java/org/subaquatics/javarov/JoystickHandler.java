@@ -116,7 +116,7 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 
             // !!!!! START OF CONTROLLER LOGIC !!!!!
 
-            if(strafe != 0) { // Regular driving
+            if(strafe == 0) { // Regular driving
                 if (forwardSpeed > 0) { // Move forward
                     robot.controlMotor(3, 2, forwardSpeed);
                     robot.controlMotor(4, 1, forwardSpeed);
