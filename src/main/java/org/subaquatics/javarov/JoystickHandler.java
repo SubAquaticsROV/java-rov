@@ -116,49 +116,36 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 
             // !!!!! START OF CONTROLLER LOGIC !!!!!
 
-            if(strafe == 0) { // Regular driving
-                if (forwardSpeed > 0) { // Move forward
-                    robot.controlMotor(3, 2, forwardSpeed);
-                    robot.controlMotor(4, 1, forwardSpeed);
-                } else if (forwardSpeed < 0) { // Move backward
-                    robot.controlMotor(3, 1, -forwardSpeed);
-                    robot.controlMotor(4, 2, -forwardSpeed);
-                } else {
-                    robot.controlMotor(3, 0, 0);
-                    robot.controlMotor(4, 0, 0);
-                }
-
-                if (turningSpeed > 0) { // Turn right
-                    robot.controlMotor(1, 1, turningSpeed);
-                    robot.controlMotor(2, 1, turningSpeed);
-                } else if (turningSpeed < 0) { // Turn left
-                    robot.controlMotor(1, 2, -turningSpeed);
-                    robot.controlMotor(2, 2, -turningSpeed);
-                } else {
-                    robot.controlMotor(1, 0, 0);
-                    robot.controlMotor(2, 0, 0);
-                }
-            } else { // Strafing
-                if (strafe > 0) {
-                    robot.controlMotor(1, 1, strafe);
-                    robot.controlMotor(2, 1, strafe);
-                    robot.controlMotor(3, 1, strafe);
-                    robot.controlMotor(4, 1, strafe);
-                } else {
-                    robot.controlMotor(1, 2, -strafe);
-                    robot.controlMotor(2, 2, -strafe);
-                    robot.controlMotor(3, 2, -strafe);
-                    robot.controlMotor(4, 2, -strafe);
-                }
+            if (turningSpeed > 10) {
+                robot.controlMotor(1, 2, turningSpeed);
+                robot.controlMotor(2, 1, turningSpeed);
+                robot.controlMotor(3, 1, turningSpeed);
+                robot.controlMotor(4, 2, turningSpeed);
+            } else if (turningSpeed < -10) {
+                robot.controlMotor(1, 1, -turningSpeed);
+                robot.controlMotor(2, 2, -turningSpeed);
+                robot.controlMotor(3, 2, -turningSpeed);
+                robot.controlMotor(4, 1, -turningSpeed);
             }
 
+            if (forwardSpeed > 10) {
+                robot.controlMotor(1, 1, forwardSpeed);
+                robot.controlMotor(2, 1, forwardSpeed);
+                robot.controlMotor(3, 2, forwardSpeed);
+                robot.controlMotor(4, 2, forwardSpeed);
+            } else if (forwardSpeed < -10) {
+                robot.controlMotor(1, 2, -forwardSpeed);
+                robot.controlMotor(2, 2, -forwardSpeed);
+                robot.controlMotor(3, 1, -forwardSpeed);
+                robot.controlMotor(4, 1, -forwardSpeed);
+            }
 
-            if (upwardSpeed > 0) {
+            if (upwardSpeed > 10) {
                 robot.controlMotor(5, 1, upwardSpeed);
                 robot.controlMotor(6, 1, upwardSpeed);
                 robot.controlMotor(7, 1, upwardSpeed);
                 robot.controlMotor(8, 1, upwardSpeed);
-            } else if (upwardSpeed < 0) {
+            } else if (upwardSpeed < -10) {
                 robot.controlMotor(5, 2, -upwardSpeed);
                 robot.controlMotor(6, 2, -upwardSpeed);
                 robot.controlMotor(7, 2, -upwardSpeed);
@@ -168,6 +155,27 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                 robot.controlMotor(6, 0, 0);
                 robot.controlMotor(7, 0, 0);
                 robot.controlMotor(8, 0, 0);
+            }
+
+            if (strafe > 10) {
+                robot.controlMotor(1, 1, strafe);
+                robot.controlMotor(2, 1, strafe);
+                robot.controlMotor(3, 1, strafe);
+                robot.controlMotor(4, 1, strafe);
+            } else if (strafe < -10) {
+                robot.controlMotor(1, 2, -strafe);
+                robot.controlMotor(2, 2, -strafe);
+                robot.controlMotor(3, 2, -strafe);
+                robot.controlMotor(4, 2, -strafe);
+            }
+            
+            if ((strafe > -10 && strafe < 10) &&
+                (forwardSpeed > -10 && forwardSpeed < 10) &&
+                (turningSpeed > -10 && turningSpeed < 10)) {
+                robot.controlMotor(1, 0, 0);
+                robot.controlMotor(2, 0, 0);
+                robot.controlMotor(3, 0, 0);
+                robot.controlMotor(4, 0, 0);
             }
 
             if (!disableClaw) {
