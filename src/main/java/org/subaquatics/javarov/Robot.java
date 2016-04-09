@@ -12,151 +12,140 @@ public class Robot implements IRobot
 	public Robot(OutputStream out) {
 		this.out = out;
 	}
+
+	private void wrap(int[] data) {
+		try {
+			int crc = 0;
+			for (int i=0; i < data.length; i++) {
+				out.write(data[i]);
+				crc ^= data[i];
+			}
+			out.write(crc);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
 	
 	// MOTORS
 	@Override
 	public synchronized void configureMotorPWMBounds(int min, int max) {
-		try {
-			out.write(0x12); // The PWM bounds command id
-			out.write(min);
-			out.write(max);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot");
-		}
+		wrap(new int[] {
+			0x12,
+			min & 0xFF,
+			max & 0xFF
+		});
 	}
 
 	@Override
 	public synchronized void configureMotorPins(int motorId, int pwmPin, int aPin, int bPin) {
-		try {
-			out.write(0x10);
-			out.write((motorId & 0xF)<<4 | (pwmPin & 0xF));
-			out.write(aPin & 0xFF);
-			out.write(bPin & 0xFF);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x10,
+			(motorId & 0xF)<<4 | (pwmPin & 0xF),
+			aPin & 0xFF,
+			bPin & 0xFF
+		});
 	}
 
 	@Override
 	public synchronized void controlMotor(int motorId, int flags, int pwm) {
-		try {
-			out.write(0x11);
-			out.write((motorId & 0xF)<<4 | (flags & 0xF));
-			out.write(pwm & 0xFF);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x11,
+			(motorId & 0xF)<<4 | (flags & 0xF),
+			pwm & 0xFF
+		});
 	}
 
 
 	// STEPPER
 	@Override
 	public synchronized void configureStepperPins(int directionPin, int stepPin, int enablePin) {
-		try {
-			out.write(0x20);
-			out.write(directionPin & 0xFF);
-			out.write(stepPin & 0xFF);
-			out.write(enablePin & 0xFF);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x20,
+			directionPin & 0xFF,
+			stepPin & 0xFF,
+			enablePin & 0xFF
+		});
 	}
 
 	@Override
 	public synchronized void controlStepper(boolean direction, boolean run) {
-		try {
-			out.write(0x21);
-			out.write((direction ? 0x80 : 0x00) | (run ? 0x40 : 0x00));
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x21,
+			(direction ? 0x80 : 0x00) | (run ? 0x40 : 0x00)
+		});
 	}
 
 	@Override
 	public synchronized void setStepperState(boolean enabled) {
-		try {
-			out.write(0x22);
-			out.write(enabled ? 0 : 1);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x22,
+			(enabled ? 0 : 1)
+		});
 	}
 
 
 	// !!!!! SENSORS !!!!!
 	@Override
 	public synchronized void setSensorState(int sensor, int state) {
-		try {
-			out.write(0x30);
-			out.write(sensor);
-			out.write(state);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x30,
+			sensor & 0xFF,
+			state & 0xFF
+		});
 	}
 
 	@Override
 	public synchronized void setVoltageSensorPin(int pin) {
-		try {
-			out.write(0x31);
-			out.write(pin);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x31,
+			pin & 0xFF
+		});
 	}
 
 	@Override
 	public synchronized void setTemperatureSensorPin(int pin) {
-		try {
-			out.write(0x32);
-			out.write(pin);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x32,
+			pin & 0xFF
+		});
 	}
 
 	@Override
 	public synchronized void setDepthSensorDensity(int density) {
-		try {
-			out.write(0x33);
-			out.write((density >> 24) & 0xFF);
-			out.write((density >> 16) & 0xFF);
-			out.write((density >> 8) & 0xFF);
-			out.write((density) & 0xFF);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x33,
+			(density >> 24) & 0xFF,
+			(density >> 16) & 0xFF,
+			(density >> 8) & 0xFF,
+			(density) & 0xFF
+		});
 	}
 
 
 	// !!!!! CAMERAS !!!!!
 	@Override
 	public synchronized void setCameraPins(int pa, int re, int ci, int vo, int mu, int xa, int ze, int bi) {
-		try {
-			out.write(0x40);
-			out.write(pa);
-			out.write(re);
-			out.write(ci);
-			out.write(vo);
-			out.write(mu);
-			out.write(xa);
-			out.write(ze);
-			out.write(bi);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0x40,
+			pa & 0xFF,
+			re & 0xFF,
+			ci & 0xFF,
+			vo & 0xFF,
+			mu & 0xFF,
+			xa & 0xFF,
+			ze & 0xFF,
+			bi & 0xFF
+		});
 	}
 
 	@Override
 	public synchronized void switchCamera(boolean multiplexer, int camera) {
-		try {
-			out.write(0x41);
-			int flags = 0;
-			flags |= multiplexer ? 1 : 0;
-			out.write(((flags & 0xF)<<4) | (camera & 0xF));
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		int flags = 0;
+		flags |= multiplexer ? 1 : 0;
+		wrap(new int[] {
+			0x41,
+			((flags & 0xF)<<4) | (camera & 0xF)
+		});
 	}
 
 
@@ -164,21 +153,17 @@ public class Robot implements IRobot
 
 	@Override
 	public synchronized void echo(int byteInt) {
-		try {
-			out.write(0xF0);
-			out.write(byteInt & 0xFF);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0xF0,
+			byteInt & 0xFF
+		});
 	}
 
 	@Override
 	public synchronized void version() {
-		try {
-			out.write(0xF1);
-		} catch(IOException e) {
-			System.out.println("Error writing to robot.");
-		}
+		wrap(new int[] {
+			0xF1
+		});
 	}
 
 }
