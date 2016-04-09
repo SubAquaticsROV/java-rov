@@ -10,7 +10,7 @@ public interface IRobot
 
 	// Stepper
 	public void configureStepperPins(int directionPin, int stepPin, int enablePin);
-	public void controlStepper(boolean direction, int amount);
+	public void controlStepper(boolean direction, boolean run);
 	public void setStepperState(boolean enabled);
 
 	// Sensors

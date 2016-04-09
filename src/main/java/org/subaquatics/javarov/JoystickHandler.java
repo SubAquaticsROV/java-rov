@@ -31,6 +31,7 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
     int turningSpeed;
     int upwardSpeed;
     int strafe;
+    int camera;
     boolean openClaw;
     boolean closeClaw;
     boolean disableClaw;
@@ -109,6 +110,17 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                             disableClawJustPressed = true;
                         }
                         break;
+                    case CAMERA_DPAD:
+                        if (event.getValue() == 1.0) {
+                            camera = 10;
+                        } else if (event.getValue() == 0.25) {
+                            camera = 11;
+                        } else if (event.getValue() == 0.50) {
+                            camera = 12;
+                        } else if (event.getValue() == 0.75) {
+                            camera = 13;
+                        }
+                        break;
 				}
 			}
 
@@ -178,9 +190,11 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 
             if (!disableClaw) {
                 if (openClaw && !closeClaw) {
-                    robot.controlStepper(true,15);
+                    robot.controlStepper(true,true);
                 } else if(closeClaw && !openClaw) {
-                    robot.controlStepper(false,15);
+                    robot.controlStepper(false,true);
+                } else {
+                    robot.controlStepper(false, false);
                 }
             }
 
@@ -189,6 +203,8 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                 disableClaw = !disableClaw;
                 robot.setStepperState(disableClaw);
             }
+
+            robot.switchCamera(false, camera);
 
             // !!!!! END OF CONTROLLING LOGIC !!!!!
 
@@ -215,6 +231,7 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
         STRAFE_RIGHT,
         OPEN_CLAW,
         CLOSE_CLAW,
-        DISABLE_CLAW;
+        DISABLE_CLAW,
+        CAMERA_DPAD;
     }
 }
