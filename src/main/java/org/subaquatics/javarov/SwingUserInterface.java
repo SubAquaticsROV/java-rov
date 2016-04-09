@@ -97,18 +97,18 @@ public class SwingUserInterface extends JFrame {
 		cliPanel.add(executeButton);
 		cliPanel.add(scriptButton);
 
-		buttonPanel.add(cameraUpButton);
+		buttonPanel.add(cameraUpButton, "align right");
 		buttonPanel.add(cameraDownButton, "wrap");
-		buttonPanel.add(cameraLeftButton);
+		buttonPanel.add(cameraLeftButton, "align right");
 		buttonPanel.add(cameraRightButton, "wrap");
 		buttonPanel.add(depth);
 		buttonPanel.add(testButton, "wrap");
-		buttonPanel.add(temperature);
-		buttonPanel.add(temperatureOnButton);
-		buttonPanel.add(temperatureOffButton, "wrap");
 		buttonPanel.add(voltage);
-		buttonPanel.add(voltageOnButton);
-		buttonPanel.add(voltageOffButton);
+		buttonPanel.add(voltageOnButton, "split 2");
+		buttonPanel.add(voltageOffButton, "wrap");
+		buttonPanel.add(temperature);
+		buttonPanel.add(temperatureOnButton, "split 2");
+		buttonPanel.add(temperatureOffButton);
 
 		cameraUpButton.addActionListener((e) -> {
 			executor.execute("switch-camera a 0");
