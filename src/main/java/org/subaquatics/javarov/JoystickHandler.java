@@ -32,6 +32,7 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
     int upwardSpeed;
     int strafe;
     int camera;
+    boolean cameraJustChanged;
     boolean openClaw;
     boolean closeClaw;
     boolean disableClaw;
@@ -112,14 +113,15 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                         break;
                     case CAMERA_DPAD:
                         if (event.getValue() == 1.0) {
-                            camera = 10;
-                        } else if (event.getValue() == 0.25) {
-                            camera = 11;
-                        } else if (event.getValue() == 0.50) {
                             camera = 12;
-                        } else if (event.getValue() == 0.75) {
+                        } else if (event.getValue() == 0.25) {
                             camera = 13;
+                        } else if (event.getValue() == 0.50) {
+                            camera = 14;
+                        } else if (event.getValue() == 0.75) {
+                            camera = 15;
                         }
+                        cameraJustChanged = true;
                         break;
 				}
 			}
@@ -204,7 +206,10 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                 robot.setStepperState(disableClaw);
             }
 
-            robot.switchCamera(false, camera);
+            if (cameraJustChanged) {
+                cameraJustChanged = false;
+                robot.switchCamera(false, camera);
+            }
 
             // !!!!! END OF CONTROLLING LOGIC !!!!!
 
