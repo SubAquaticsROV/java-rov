@@ -17,6 +17,10 @@ import org.subaquatics.javarov.RovReader.TemperatureListener;
 
 public class SwingUserInterface extends JFrame {
 
+	private JButton cameraUpButton = new JButton("Up");
+	private JButton cameraDownButton = new JButton("Down");
+	private JButton cameraLeftButton = new JButton("Left");
+	private JButton cameraRightButton = new JButton("Right");
 	private JTextArea log = new JTextArea(50, 80);
 	private JTextField commandField = new JTextField(72);
 	private JButton executeButton = new JButton("Execute");
@@ -35,6 +39,8 @@ public class SwingUserInterface extends JFrame {
 		JPanel panel = new JPanel(new MigLayout());
 
 		JPanel cliPanel = new JPanel(new MigLayout());
+
+		JPanel buttonPanel = new JPanel(new MigLayout());
 
 		log.setEditable(false);
 		DefaultCaret caret = (DefaultCaret)log.getCaret();
@@ -80,8 +86,31 @@ public class SwingUserInterface extends JFrame {
 		cliPanel.add(executeButton);
 		cliPanel.add(scriptButton);
 
-		panel.add(cliPanel, "spany 2");
+		buttonPanel.add(cameraUpButton);
+		buttonPanel.add(cameraDownButton, "wrap");
+		buttonPanel.add(cameraLeftButton);
+		buttonPanel.add(cameraRightButton);
+
+
+		cameraUpButton.addActionListener((e) -> {
+			executor.execute("switch-camera a 0");
+		});
+
+		cameraDownButton.addActionListener((e) -> {
+			executor.execute("switch-camera a 1");
+		});
+
+		cameraLeftButton.addActionListener((e) -> {
+			executor.execute("switch-camera a 2");
+		});
+
+		cameraRightButton.addActionListener((e) -> {
+			executor.execute("switch-camera a 3");
+		});
+
+		panel.add(buttonPanel);
 		panel.add(graphOne, "wrap");
+		panel.add(cliPanel);
 		panel.add(graphTwo);
 
 		this.add(panel);
