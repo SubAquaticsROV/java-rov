@@ -17,6 +17,7 @@ public interface IRobot
 	public void setSensorState(int sensor, int state);
 	public void setVoltageSensorPin(int pin);
 	public void setTemperatureSensorPin(int pin);
+	public void setDepthSensorDensity(int density);
 
 	// Cameras
 	public void setCameraPins(int pa, int re, int ci, int vo, int mu, int xa, int ze, int bi);

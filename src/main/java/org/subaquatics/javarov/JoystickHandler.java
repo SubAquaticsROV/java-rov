@@ -67,8 +67,6 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
         running = true;
 		EventQueue queue = controller.getEventQueue();
 		Event event = new Event();
-		boolean bumper = false;
-		final float deadzone = 0.25f;
 		while(running) {
 			controller.poll();
 			while(queue.getNextEvent(event)) {
@@ -129,15 +127,15 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
             }
 
             if (forwardSpeed > 10) {
-                robot.controlMotor(1, 1, forwardSpeed);
-                robot.controlMotor(2, 1, forwardSpeed);
-                robot.controlMotor(3, 2, forwardSpeed);
-                robot.controlMotor(4, 2, forwardSpeed);
+                robot.controlMotor(1, 2, forwardSpeed);
+                robot.controlMotor(2, 2, forwardSpeed);
+                robot.controlMotor(3, 1, forwardSpeed);
+                robot.controlMotor(4, 1, forwardSpeed);
             } else if (forwardSpeed < -10) {
-                robot.controlMotor(1, 2, -forwardSpeed);
-                robot.controlMotor(2, 2, -forwardSpeed);
-                robot.controlMotor(3, 1, -forwardSpeed);
-                robot.controlMotor(4, 1, -forwardSpeed);
+                robot.controlMotor(1, 1, -forwardSpeed);
+                robot.controlMotor(2, 1, -forwardSpeed);
+                robot.controlMotor(3, 2, -forwardSpeed);
+                robot.controlMotor(4, 2, -forwardSpeed);
             }
 
             if (upwardSpeed > 10) {
@@ -159,14 +157,14 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 
             if (strafe > 10) {
                 robot.controlMotor(1, 1, strafe);
-                robot.controlMotor(2, 1, strafe);
+                robot.controlMotor(2, 2, strafe);
                 robot.controlMotor(3, 1, strafe);
-                robot.controlMotor(4, 1, strafe);
+                robot.controlMotor(4, 2, strafe);
             } else if (strafe < -10) {
                 robot.controlMotor(1, 2, -strafe);
-                robot.controlMotor(2, 2, -strafe);
+                robot.controlMotor(2, 1, -strafe);
                 robot.controlMotor(3, 2, -strafe);
-                robot.controlMotor(4, 2, -strafe);
+                robot.controlMotor(4, 1, -strafe);
             }
             
             if ((strafe > -10 && strafe < 10) &&
@@ -200,10 +198,13 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
 				e.printStackTrace();
 			}
 		}
+        System.out.println("Joystick thread stopped.");
 	}
 
     public void stop() {
-        running = false;
+        //synchronized (running) {
+            running = false;
+        //}
     }
 
     private static enum RobotActions {

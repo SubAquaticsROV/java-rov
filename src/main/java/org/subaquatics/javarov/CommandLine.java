@@ -270,7 +270,7 @@ public class CommandLine implements Runnable, QuitListener {
 
 		// Sensors
 
-		Pattern configureSensorStatePattern = Pattern.compile("(voltage|temperature)\\s+(on|off)");
+		Pattern configureSensorStatePattern = Pattern.compile("(voltage|temperature|depth)\\s+(on|off)");
 		addCommand(new Command(
 			"configure-sensorstate",
 			"<sensor> <on|off>",
@@ -283,6 +283,7 @@ public class CommandLine implements Runnable, QuitListener {
 					switch(sensor) {
 						case "voltage": sensorId = 0x31; break;
 						case "temperature": sensorId = 0x32; break;
+						case "depth": sensorId = 0x33; break;
 					}
 					String onOff = m.group(2);
 					int state = onOff.equals("on") ? 0x1: 0x0;
@@ -319,6 +320,22 @@ public class CommandLine implements Runnable, QuitListener {
 				if(m.matches()) {
 					int pin = Integer.parseInt(m.group(1));
 					bot.setTemperatureSensorPin(pin);
+					return true;
+				}
+				return false;
+			}
+		));
+
+		Pattern configureDepthSensorDensityPattern = Pattern.compile("(\\d+)");
+		addCommand(new Command(
+			"configure-depthsensordensity",
+			"<density>",
+			"Configure the depth sensor.",
+			(arg) -> {
+				Matcher m = configureDepthSensorDensityPattern.matcher(arg);
+				if(m.matches()) {
+					int density = Integer.parseInt(m.group(1));
+					bot.setDepthSensorDensity(density);
 					return true;
 				}
 				return false;

@@ -115,6 +115,19 @@ public class Robot implements IRobot
 		}
 	}
 
+	@Override
+	public synchronized void setDepthSensorDensity(int density) {
+		try {
+			out.write(0x33);
+			out.write((density << 24) & 0xFF);
+			out.write((density << 16) & 0xFF);
+			out.write((density << 8) & 0xFF);
+			out.write((density) & 0xFF);
+		} catch(IOException e) {
+			System.out.println("Error writing to robot.");
+		}
+	}
+
 
 	// !!!!! CAMERAS !!!!!
 	@Override
