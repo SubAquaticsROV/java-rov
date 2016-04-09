@@ -35,7 +35,7 @@ public class SwingUserInterface extends JFrame {
 	private GraphBuffer voltageGraphBuffer = new GraphBuffer(1500);
 	private GraphBuffer temperatureGraphBuffer = new GraphBuffer(1500);
 	private LineGraphPanel graphOne = new LineGraphPanel(voltageGraphBuffer, "Voltage", 0, 1024, 32, 1000, Color.GREEN);
-	private LineGraphPanel graphTwo = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 12000, 32, Color.RED, 0.01, "%d degrees celcius", "AVG ", "LAST ");
+	private LineGraphPanel graphTwo = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 12000, 1000, 150, Color.RED, 0.01, "", "AVG ", "LAST ");
 
 	private ArrayList<QuitListener> quitters = new ArrayList<>();
 	private ExecuteComand executor;
