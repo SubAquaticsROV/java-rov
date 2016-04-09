@@ -17,6 +17,11 @@ import org.subaquatics.javarov.RovReader.TemperatureListener;
 
 public class SwingUserInterface extends JFrame {
 
+	private JButton temperatureOnButton = new JButton("On");
+	private JButton temperatureOffButton = new JButton("Off");
+	private JButton voltageOnButton = new JButton("On");
+	private JButton voltageOffButton = new JButton("Off");
+	private JButton testButton = new JButton("Test");
 	private JButton cameraUpButton = new JButton("Up");
 	private JButton cameraDownButton = new JButton("Down");
 	private JButton cameraLeftButton = new JButton("Left");
@@ -41,6 +46,12 @@ public class SwingUserInterface extends JFrame {
 		JPanel cliPanel = new JPanel(new MigLayout());
 
 		JPanel buttonPanel = new JPanel(new MigLayout());
+
+		JLabel depth = new JLabel("Depth");
+		
+		JLabel temperature = new JLabel("Temperature");
+
+		JLabel voltage = new JLabel("Voltage");
 
 		log.setEditable(false);
 		DefaultCaret caret = (DefaultCaret)log.getCaret();
@@ -86,11 +97,18 @@ public class SwingUserInterface extends JFrame {
 		cliPanel.add(executeButton);
 		cliPanel.add(scriptButton);
 
-		buttonPanel.add(cameraUpButton);
+		buttonPanel.add(cameraUpButton, "align right");
 		buttonPanel.add(cameraDownButton, "wrap");
-		buttonPanel.add(cameraLeftButton);
-		buttonPanel.add(cameraRightButton);
-
+		buttonPanel.add(cameraLeftButton, "align right");
+		buttonPanel.add(cameraRightButton, "wrap");
+		buttonPanel.add(depth);
+		buttonPanel.add(testButton, "wrap");
+		buttonPanel.add(voltage);
+		buttonPanel.add(voltageOnButton, "split 2");
+		buttonPanel.add(voltageOffButton, "wrap");
+		buttonPanel.add(temperature);
+		buttonPanel.add(temperatureOnButton, "split 2");
+		buttonPanel.add(temperatureOffButton);
 
 		cameraUpButton.addActionListener((e) -> {
 			executor.execute("switch-camera a 0");
@@ -106,6 +124,28 @@ public class SwingUserInterface extends JFrame {
 
 		cameraRightButton.addActionListener((e) -> {
 			executor.execute("switch-camera a 3");
+		});
+		
+		testButton.addActionListener((e) -> {
+			executor.execute("configure-sensorstate depth on");
+		});
+
+		temperatureOnButton.addActionListener((e) -> {
+			executor.execute("configure-sensorstate temperature on");
+		});
+
+		temperatureOffButton.addActionListener((e) -> {
+			executor.execute("configure-sensorstate temperature off");
+		});
+
+
+		voltageOnButton.addActionListener((e) -> {
+			executor.execute("configure-sensorstate voltage on");
+		});
+
+
+		voltageOffButton.addActionListener((e) -> {
+			executor.execute("configure-sensorstate voltage off");
 		});
 
 		panel.add(buttonPanel);
