@@ -17,6 +17,7 @@ import org.subaquatics.javarov.RovReader.TemperatureListener;
 
 public class SwingUserInterface extends JFrame {
 
+	private JButton testButton = new JButton("Test");
 	private JButton cameraUpButton = new JButton("Up");
 	private JButton cameraDownButton = new JButton("Down");
 	private JButton cameraLeftButton = new JButton("Left");
@@ -41,6 +42,8 @@ public class SwingUserInterface extends JFrame {
 		JPanel cliPanel = new JPanel(new MigLayout());
 
 		JPanel buttonPanel = new JPanel(new MigLayout());
+
+		JLabel depth = new JLabel("Depth");
 
 		log.setEditable(false);
 		DefaultCaret caret = (DefaultCaret)log.getCaret();
@@ -89,7 +92,9 @@ public class SwingUserInterface extends JFrame {
 		buttonPanel.add(cameraUpButton);
 		buttonPanel.add(cameraDownButton, "wrap");
 		buttonPanel.add(cameraLeftButton);
-		buttonPanel.add(cameraRightButton);
+		buttonPanel.add(cameraRightButton, "wrap");
+		buttonPanel.add(depth);
+		buttonPanel.add(testButton);
 
 
 		cameraUpButton.addActionListener((e) -> {
@@ -106,6 +111,11 @@ public class SwingUserInterface extends JFrame {
 
 		cameraRightButton.addActionListener((e) -> {
 			executor.execute("switch-camera a 3");
+		});
+
+		
+		testButton.addActionListener((e) -> {
+			executor.execute("configure-sensorstate depth on");
 		});
 
 		panel.add(buttonPanel);
