@@ -35,7 +35,7 @@ public class SwingUserInterface extends JFrame {
 	private GraphBuffer voltageGraphBuffer = new GraphBuffer(1500);
 	private GraphBuffer temperatureGraphBuffer = new GraphBuffer(1500);
 	private LineGraphPanel graphOne = new LineGraphPanel(voltageGraphBuffer, "Voltage", 0, 1024, 32, 1000, Color.GREEN);
-	private LineGraphPanel graphTwo = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 1024, 32, 1000, Color.RED);
+	private LineGraphPanel graphTwo = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 12000, 32, Color.RED, 0.01, "%d degrees celcius", "AVG ", "LAST ");
 
 	private ArrayList<QuitListener> quitters = new ArrayList<>();
 	private ExecuteComand executor;
@@ -174,9 +174,13 @@ public class SwingUserInterface extends JFrame {
 	}
 
 	public TemperatureListener getTemperatureListener() {
-		return (temperature) -> {
+		return (data) -> {
 			synchronized(temperatureGraphBuffer) {
-				temperatureGraphBuffer.insertData(temperature);
+				double A = 1.272042067e-3;
+				double B = 2.058353017e-4;
+				double C = 2.274034585e-7;
+				double temperature = 1/(A+B * Math.log(data) + C * (Math.log(data) * Math.log(data) * Math.log(data)));
+				temperatureGraphBuffer.insertData((int)(temperature * 100));
 			}
 		};
 	}
