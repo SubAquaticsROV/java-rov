@@ -35,8 +35,9 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
     boolean cameraJustChanged;
     boolean openClaw;
     boolean closeClaw;
-    boolean disableClaw;
     boolean disableClawJustPressed;
+    int deadzone = 25;
+    boolean hold = false;
 
 	public JoystickHandler(IRobot robot, Controller controller, String mappingFile) {
 		this.robot = robot;
@@ -112,98 +113,102 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
                         }
                         break;
                     case CAMERA_DPAD:
-                        if (event.getValue() == 1.0) {
-                            camera = 12;
-                        } else if (event.getValue() == 0.25) {
-                            camera = 13;
-                        } else if (event.getValue() == 0.50) {
+                        if (event.getValue() == 0.25) {
                             camera = 14;
+                        } else if (event.getValue() == 0.50) {
+                            camera = 13;
                         } else if (event.getValue() == 0.75) {
+                            camera = 12;
+                        } else if (event.getValue() == 1.00) {
                             camera = 15;
                         }
                         cameraJustChanged = true;
+                        break;
+                    case HOLD:
+                        hold = event.getValue()>=0.5;
                         break;
 				}
 			}
 
             // !!!!! START OF CONTROLLER LOGIC !!!!!
 
-            if (turningSpeed > 10) {
-                robot.controlMotor(1, 2, turningSpeed);
-                robot.controlMotor(2, 1, turningSpeed);
-                robot.controlMotor(3, 1, turningSpeed);
-                robot.controlMotor(4, 2, turningSpeed);
-            } else if (turningSpeed < -10) {
-                robot.controlMotor(1, 1, -turningSpeed);
-                robot.controlMotor(2, 2, -turningSpeed);
-                robot.controlMotor(3, 2, -turningSpeed);
-                robot.controlMotor(4, 1, -turningSpeed);
-            }
+            if (!hold) {
+                if (turningSpeed > deadzone) {
+                    robot.controlMotor(1, 2, turningSpeed);
+                    robot.controlMotor(2, 1, turningSpeed);
+                    robot.controlMotor(3, 1, turningSpeed);
+                    robot.controlMotor(4, 2, turningSpeed);
+                } else if (turningSpeed < -deadzone) {
+                    robot.controlMotor(1, 1, -turningSpeed);
+                    robot.controlMotor(2, 2, -turningSpeed);
+                    robot.controlMotor(3, 2, -turningSpeed);
+                    robot.controlMotor(4, 1, -turningSpeed);
+                }
 
-            if (forwardSpeed > 10) {
-                robot.controlMotor(1, 2, forwardSpeed);
-                robot.controlMotor(2, 2, forwardSpeed);
-                robot.controlMotor(3, 1, forwardSpeed);
-                robot.controlMotor(4, 1, forwardSpeed);
-            } else if (forwardSpeed < -10) {
-                robot.controlMotor(1, 1, -forwardSpeed);
-                robot.controlMotor(2, 1, -forwardSpeed);
-                robot.controlMotor(3, 2, -forwardSpeed);
-                robot.controlMotor(4, 2, -forwardSpeed);
-            }
+                if (forwardSpeed > deadzone) {
+                    robot.controlMotor(1, 2, forwardSpeed);
+                    robot.controlMotor(2, 2, forwardSpeed);
+                    robot.controlMotor(3, 1, forwardSpeed);
+                    robot.controlMotor(4, 1, forwardSpeed);
+                } else if (forwardSpeed < -deadzone) {
+                    robot.controlMotor(1, 1, -forwardSpeed);
+                    robot.controlMotor(2, 1, -forwardSpeed);
+                    robot.controlMotor(3, 2, -forwardSpeed);
+                    robot.controlMotor(4, 2, -forwardSpeed);
+                }
 
-            if (upwardSpeed > 10) {
-                robot.controlMotor(5, 1, upwardSpeed);
-                robot.controlMotor(6, 1, upwardSpeed);
-                robot.controlMotor(7, 1, upwardSpeed);
-                robot.controlMotor(8, 1, upwardSpeed);
-            } else if (upwardSpeed < -10) {
-                robot.controlMotor(5, 2, -upwardSpeed);
-                robot.controlMotor(6, 2, -upwardSpeed);
-                robot.controlMotor(7, 2, -upwardSpeed);
-                robot.controlMotor(8, 2, -upwardSpeed);
-            } else {
-                robot.controlMotor(5, 0, 0);
-                robot.controlMotor(6, 0, 0);
-                robot.controlMotor(7, 0, 0);
-                robot.controlMotor(8, 0, 0);
-            }
+                if (upwardSpeed > deadzone) {
+                    robot.controlMotor(5, 1, upwardSpeed);
+                    robot.controlMotor(6, 1, upwardSpeed);
+                    robot.controlMotor(7, 1, upwardSpeed);
+                    robot.controlMotor(8, 1, upwardSpeed);
+                } else if (upwardSpeed < -deadzone) {
+                    robot.controlMotor(5, 2, -upwardSpeed);
+                    robot.controlMotor(6, 2, -upwardSpeed);
+                    robot.controlMotor(7, 2, -upwardSpeed);
+                    robot.controlMotor(8, 2, -upwardSpeed);
+                } else {
+                    robot.controlMotor(5, 0, 0);
+                    robot.controlMotor(6, 0, 0);
+                    robot.controlMotor(7, 0, 0);
+                    robot.controlMotor(8, 0, 0);
+                }
 
-            if (strafe > 10) {
-                robot.controlMotor(1, 1, strafe);
-                robot.controlMotor(2, 2, strafe);
-                robot.controlMotor(3, 1, strafe);
-                robot.controlMotor(4, 2, strafe);
-            } else if (strafe < -10) {
-                robot.controlMotor(1, 2, -strafe);
-                robot.controlMotor(2, 1, -strafe);
-                robot.controlMotor(3, 2, -strafe);
-                robot.controlMotor(4, 1, -strafe);
-            }
-            
-            if ((strafe > -10 && strafe < 10) &&
-                (forwardSpeed > -10 && forwardSpeed < 10) &&
-                (turningSpeed > -10 && turningSpeed < 10)) {
-                robot.controlMotor(1, 0, 0);
-                robot.controlMotor(2, 0, 0);
-                robot.controlMotor(3, 0, 0);
-                robot.controlMotor(4, 0, 0);
-            }
+                if (strafe > deadzone) {
+                    robot.controlMotor(1, 1, strafe);
+                    robot.controlMotor(2, 2, strafe);
+                    robot.controlMotor(3, 1, strafe);
+                    robot.controlMotor(4, 2, strafe);
+                } else if (strafe < -deadzone) {
+                    robot.controlMotor(1, 2, -strafe);
+                    robot.controlMotor(2, 1, -strafe);
+                    robot.controlMotor(3, 2, -strafe);
+                    robot.controlMotor(4, 1, -strafe);
+                }
+                
+                if ((strafe > -deadzone && strafe < deadzone) &&
+                    (forwardSpeed > -deadzone && forwardSpeed < deadzone) &&
+                    (turningSpeed > -deadzone && turningSpeed < deadzone)) {
+                    robot.controlMotor(1, 0, 0);
+                    robot.controlMotor(2, 0, 0);
+                    robot.controlMotor(3, 0, 0);
+                    robot.controlMotor(4, 0, 0);
+                }
 
-            if (!disableClaw) {
                 if (openClaw && !closeClaw) {
+                    robot.setStepperState(false);
                     robot.controlStepper(true,true);
                 } else if(closeClaw && !openClaw) {
+                    robot.setStepperState(false);
                     robot.controlStepper(false,true);
                 } else {
                     robot.controlStepper(false, false);
                 }
-            }
 
-            if (disableClawJustPressed) {
-                disableClawJustPressed = false;
-                disableClaw = !disableClaw;
-                robot.setStepperState(disableClaw);
+                if (disableClawJustPressed) {
+                    robot.setStepperState(true);
+                    disableClawJustPressed = false;
+                }
             }
 
             if (cameraJustChanged) {
@@ -237,6 +242,7 @@ public class JoystickHandler implements Runnable { // Reads from a joystick and 
         OPEN_CLAW,
         CLOSE_CLAW,
         DISABLE_CLAW,
-        CAMERA_DPAD;
+        CAMERA_DPAD,
+        HOLD;
     }
 }

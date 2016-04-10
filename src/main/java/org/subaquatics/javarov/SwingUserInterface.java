@@ -22,10 +22,10 @@ public class SwingUserInterface extends JFrame {
 	private JButton voltageOnButton = new JButton("On");
 	private JButton voltageOffButton = new JButton("Off");
 	private JButton testButton = new JButton("Test");
-	private JButton cameraUpButton = new JButton("Up");
-	private JButton cameraDownButton = new JButton("Down");
-	private JButton cameraLeftButton = new JButton("Left");
-	private JButton cameraRightButton = new JButton("Right");
+	private JButton cameraUpButton = new JButton("Front");
+	private JButton cameraDownButton = new JButton("Back");
+	private JButton cameraLeftButton = new JButton("Claw");
+	private JButton cameraRightButton = new JButton("Bottom");
 	private JTextArea log = new JTextArea(50, 80);
 	private JTextField commandField = new JTextField(72);
 	private JButton executeButton = new JButton("Execute");
@@ -111,19 +111,19 @@ public class SwingUserInterface extends JFrame {
 		buttonPanel.add(temperatureOffButton);
 
 		cameraUpButton.addActionListener((e) -> {
-			executor.execute("switch-camera a 0");
-		});
-
-		cameraDownButton.addActionListener((e) -> {
 			executor.execute("switch-camera a 1");
 		});
 
+		cameraDownButton.addActionListener((e) -> {
+			executor.execute("switch-camera a 3");
+		});
+
 		cameraLeftButton.addActionListener((e) -> {
-			executor.execute("switch-camera a 2");
+			executor.execute("switch-camera a 0");
 		});
 
 		cameraRightButton.addActionListener((e) -> {
-			executor.execute("switch-camera a 3");
+			executor.execute("switch-camera a 2");
 		});
 		
 		testButton.addActionListener((e) -> {
