@@ -35,7 +35,8 @@ public class SwingUserInterface extends JFrame {
 	private GraphBuffer voltageGraphBuffer = new GraphBuffer(1500);
 	private GraphBuffer temperatureGraphBuffer = new GraphBuffer(1500);
 	private LineGraphPanel graphOne = new LineGraphPanel(voltageGraphBuffer, "Voltage", 0, 1024, 32, 1000, Color.GREEN);
-	private LineGraphPanel graphTwo = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 12000, 1000, 150, Color.RED, 0.01, "", "AVG ", "LAST ");
+	//private LineGraphPanel graphTwo = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 1024, 32, 1000, Color.RED);
+	private LineGraphPanel graphTwo = new LineGraphPanel(temperatureGraphBuffer, "Temperature", 0, 30000, 1000, 10000, Color.RED, 1, "", "AVG ", "LAST ");
 
 	private ArrayList<QuitListener> quitters = new ArrayList<>();
 	private ExecuteComand executor;
@@ -176,11 +177,15 @@ public class SwingUserInterface extends JFrame {
 	public TemperatureListener getTemperatureListener() {
 		return (data) -> {
 			synchronized(temperatureGraphBuffer) {
-				double A = 1.272042067e-3;
-				double B = 2.058353017e-4;
-				double C = 2.274034585e-7;
-				double temperature = 1/(A+B * Math.log(data) + C * (Math.log(data) * Math.log(data) * Math.log(data)));
-				temperatureGraphBuffer.insertData((int)(temperature * 100));
+				voltageGraphBuffer.insertData(data);
+				/*double A = 1.272556562e-3;
+				double B = 2.057340045e-4;
+				double C = 2.279277463e-7;
+				double temperature = 1.0/(A+B * Math.log(data) + C * (Math.log(data) * Math.log(data) * Math.log(data)));*/
+				double resistance = 10000.0;
+				double percent = data / 1024.0;
+				double resistance2 = (percent * resistance) / (1.0 - percent);
+				temperatureGraphBuffer.insertData((int)(resistance2));
 			}
 		};
 	}
